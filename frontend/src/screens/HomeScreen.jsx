@@ -1,19 +1,19 @@
-import { Row, Col } from "react-bootstrap";
-import { products } from "../product";
-import Product from "../components/Product";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+import ProductList from "../components/ProductList";
+import { Container } from "react-bootstrap";
 
 function HomeScreen() {
   return (
-    <div>
-      <h1>Latest Products</h1>
-      <Row>
-        {products.map((product) => (
-          <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-            <Product product={product} />
-          </Col>
-        ))}
-      </Row>
-    </div>
+    <>
+      <Header />
+      <main className="py-3">
+        <Container>
+          <ProductList />
+        </Container>
+      </main>
+      <Footer />
+    </>
   );
 }
 
