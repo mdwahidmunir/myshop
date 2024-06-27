@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 
-function Rating({ value, color }) {
+function Rating({ value, text, color }) {
   const ratingThersholds = [0.5, 1.5, 2.5, 3.5, 4.5];
   return (
     <div className="raing">
@@ -18,6 +18,7 @@ function Rating({ value, color }) {
           />
         </span>
       ))}
+      <span>{text && text}</span>
     </div>
   );
 }
