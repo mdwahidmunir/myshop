@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const productRouter = require('./router/ProductRouter');
+const cors = require('cors');
 
 dotenv.config()
 const { MONGO_URI: dbURL } = process.env
@@ -15,6 +16,7 @@ mongoose.connect(dbURL).then((conn) => {
 
 const app = express();
 
+app.use(cors())
 app.use(bodyParser.json());
 
 app.use('/api/v1/products', productRouter)
