@@ -20,7 +20,7 @@ export const fetchAllProducts = createAsyncThunk(
 export const fetchProductById = createAsyncThunk(
     'products/fetchProductById',
     async (id, thunkApi) => {
-        console.log("In async thunk ID:", id);
+
         try {
             const response = await _axios.get(`/products/${id}`)
             return response.data.response

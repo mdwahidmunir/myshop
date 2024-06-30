@@ -16,7 +16,7 @@ function ProductList() {
 
   const products = useSelector(selectAllProducts);
   const { loading, error } = useSelector(selectProductState);
-  console.log("LOADING :", loading);
+
   return (
     <>
       {loading ? (
