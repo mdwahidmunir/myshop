@@ -6,13 +6,15 @@ import { Container } from "react-bootstrap";
 function HomeScreen() {
   return (
     <>
-      <Header />
-      <main className="py-3">
-        <Container>
-          <ProductList />
-        </Container>
-      </main>
-      <Footer />
+      <div>
+        <Header />
+        <main className="py-3">
+          <Container>
+            <ProductList />
+          </Container>
+        </main>
+        <Footer />
+      </div>
     </>
   );
 }
