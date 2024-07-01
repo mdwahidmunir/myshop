@@ -1,14 +1,15 @@
 import { Col, Row, Image, ListGroup, Card, Button } from "react-bootstrap";
+import Form from "react-bootstrap/Form";
 import Rating from "./Rating";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { clearProduct, fetchProductById } from "../redux/slices/productSlice";
 import { selectProductById } from "../redux/selectors/productSelector";
 import { useDispatch, useSelector } from "react-redux";
 
 function ProductDetail() {
   const { id } = useParams();
-  const params = useParams();
+  const [qty, setQty] = useState();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -68,6 +69,29 @@ function ProductDetail() {
                       </Col>
                     </Row>
                   </ListGroup.Item>
+
+                  {product.countInStock > 0 && (
+                    <ListGroup.Item>
+                      <Row>
+                        <Col className="my-auto">Qty:</Col>
+                        <Col xs="auto" className="my-1">
+                          <Form.Select
+                            as="select"
+                            value={qty}
+                            onChange={(e) => setQty(e.target.value)}
+                          >
+                            {[...Array(product.countInStock).keys()].map(
+                              (x) => (
+                                <option key={x + 1} value={x + 1}>
+                                  {x + 1}
+                                </option>
+                              )
+                            )}
+                          </Form.Select>
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                  )}
 
                   <ListGroup.Item>
                     <Button
