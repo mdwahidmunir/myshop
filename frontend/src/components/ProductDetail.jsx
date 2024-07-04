@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 function ProductDetail() {
   const { id } = useParams();
-  const [qty, setQty] = useState("1");
+  const [qty, setQty] = useState(1);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -86,7 +86,7 @@ function ProductDetail() {
                           <Form.Select
                             as="select"
                             value={qty}
-                            onChange={(e) => setQty(e.target.value)}
+                            onChange={(e) => setQty(Number(e.target.value))}
                           >
                             {[...Array(product.countInStock).keys()].map(
                               (x) => (
