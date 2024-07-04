@@ -6,7 +6,7 @@ export const addToCart = createAsyncThunk(
     async ({ id, qty }, thunkApi) => {
         try {
             const response = await _axios.get(`/products/${id}`);
-            const data = { ...response.data.response, qty } // response.data.response is the product detail from backend and we are adding qty to it
+            const data = { ...response.data.response, qty: Number(qty) } // response.data.response is the product detail from backend and we are adding qty to it
             return data
         }
         catch (err) {
@@ -25,7 +25,12 @@ const cartSlice = createSlice({
         loading: true,
         error: null
     },
-    reducers: {},
+    reducers: {
+        removeFromCart: (state, action) => {
+            state.cartItems = state.cartItems.filter(item => item._id !== action.payload)
+            localStorage.setItem('cart', JSON.stringify(state.cartItems))
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(addToCart.pending, (state) => {
@@ -53,4 +58,5 @@ const cartSlice = createSlice({
     }
 })
 
+export const { removeFromCart } = cartSlice.actions
 export default cartSlice.reducer
