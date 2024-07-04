@@ -14,10 +14,14 @@ export const addToCart = createAsyncThunk(
         }
     }
 )
-export const cartSlice = createSlice({
+
+const cartItemFromStorage = JSON.parse(localStorage.getItem('cart')) || []
+const initialCartItems = cartItemFromStorage.length !== 0 ? cartItemFromStorage : []
+
+const cartSlice = createSlice({
     name: 'cart',
     initialState: {
-        cart: [],
+        cartItems: initialCartItems,
         loading: true,
         error: null
     },
@@ -33,18 +37,18 @@ export const cartSlice = createSlice({
             })
             .addCase(addToCart.fulfilled, (state, action) => {
                 const currentItem = action.payload
-                const existItem = state.cart.find(product => product._id === currentItem._id)
+                const existItem = state.cartItems.find(product => product._id === currentItem._id)
 
                 state.loading = false
                 state.error = null
                 if (existItem) {
-                    const cartIndex = state.cart.indexOf(existItem)
-                    state.cart[cartIndex] = currentItem
+                    const cartIndex = state.cartItems.indexOf(existItem)
+                    state.cartItems[cartIndex] = currentItem
                 }
                 else {
-                    state.cart.push(currentItem)
+                    state.cartItems.push(currentItem)
                 }
-                state.cart.length !== 0 && localStorage.setItem('cart', JSON.stringify(state.cart))
+                state.cartItems.length !== 0 && localStorage.setItem('cart', JSON.stringify(state.cartItems))
             })
     }
 })

@@ -6,11 +6,11 @@ import { useEffect, useState } from "react";
 import { clearProduct, fetchProductById } from "../redux/slices/productSlice";
 import { selectProductById } from "../redux/selectors/productSelector";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../redux/slices/cartSlice";
+// import { addToCart } from "../redux/slices/cartSlice";
 
 function ProductDetail() {
   const { id } = useParams();
-  const [qty, setQty] = useState();
+  const [qty, setQty] = useState("1");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -23,8 +23,8 @@ function ProductDetail() {
   const product = useSelector(selectProductById);
 
   const handleAddToCart = (id, qty) => {
-    navigate(`/cart/${id}`);
-    dispatch(addToCart({ id, qty }));
+    navigate(`/cart/${id}?qty=${qty}`);
+    // dispatch(addToCart({ id, qty }));
   };
 
   return (
