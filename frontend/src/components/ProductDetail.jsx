@@ -1,16 +1,18 @@
 import { Col, Row, Image, ListGroup, Card, Button } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Rating from "./Rating";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { clearProduct, fetchProductById } from "../redux/slices/productSlice";
 import { selectProductById } from "../redux/selectors/productSelector";
 import { useDispatch, useSelector } from "react-redux";
+// import { addToCart } from "../redux/slices/cartSlice";
 
 function ProductDetail() {
   const { id } = useParams();
-  const [qty, setQty] = useState();
+  const [qty, setQty] = useState("1");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchProductById(id));
@@ -19,6 +21,12 @@ function ProductDetail() {
   }, [dispatch, id]);
 
   const product = useSelector(selectProductById);
+
+  const handleAddToCart = (id, qty) => {
+    navigate(`/cart/${id}?qty=${qty}`);
+    // dispatch(addToCart({ id, qty }));
+  };
+
   return (
     <>
       {product && (
@@ -98,6 +106,7 @@ function ProductDetail() {
                       className="btn-block w-100"
                       disabled={product.countInStock == 0}
                       type="button"
+                      onClick={() => handleAddToCart(product._id, qty)}
                     >
                       Add to Cart
                     </Button>
