@@ -2,7 +2,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
-const productRouter = require('./router/ProductRouter');
+const productRouter = require('./router/productRouter');
+const userRouter = require('./router/userRouter')
 const cors = require('cors');
 
 dotenv.config()
@@ -20,6 +21,7 @@ app.use(cors())
 app.use(bodyParser.json());
 
 app.use('/api/v1/products', productRouter)
+app.use('/api/v1/users', userRouter)
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

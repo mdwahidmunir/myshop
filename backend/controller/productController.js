@@ -10,7 +10,7 @@ const getAllProducts = async (req, res) => {
         })
     }
     catch (err) {
-        return res.status(502).json({
+        return res.status(400).json({
             status: "failure",
             error: err
         })
@@ -28,7 +28,7 @@ const getProductById = async (req, res) => {
         })
     }
     catch (err) {
-        return res.status(502).json({
+        return res.status(400).json({
             status: "failure",
             error: err
         })
@@ -45,7 +45,7 @@ const createProduct = async (req, res) => {
         })
     }
     catch (err) {
-        return res.status(502).json({
+        return res.status(400).json({
             status: "failure",
             error: err
         })
