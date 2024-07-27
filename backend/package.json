@@ -17,6 +17,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.4",
     "nodemailer": "^6.9.14",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
     "short-uuid": "^5.2.0"
   }
 }

@@ -7,6 +7,8 @@ const productRouter = require('./router/productRouter');
 const userRouter = require('./router/userRouter')
 const authRouter = require('./router/authRouter')
 const cors = require('cors');
+const passport = require('passport')
+require('./configs/passport')(passport)
 
 dotenv.config()
 const { MONGO_URI: dbURL } = process.env
@@ -22,6 +24,7 @@ const app = express();
 app.use(cors())
 app.use(bodyParser.json());
 app.use(cookieParser())
+app.use(passport.initialize())
 
 app.use('/api/v1/products', productRouter)
 app.use('/api/v1/users', userRouter)

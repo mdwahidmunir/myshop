@@ -46,7 +46,7 @@ const login = async (req, res) => {
             const user = await User.findOne({ email: email })
 
             if (!user || user?.password !== password)
-                return res.status(400).json({
+                return res.status(403).json({
                     status: "failure",
                     error: "Email or Password does not match"
                 })
@@ -54,7 +54,7 @@ const login = async (req, res) => {
 
             if (password === user.password) {
                 const authToken = await promisifiedJWTSign({ id: user._id }, JWT_SECRET)
-                res.cookie('jwt', authToken, { maxAge: 1000 * 60 * 60 * 24 }) // 24 Hrs
+                res.cookie('jwt', authToken, { maxAge: 1000 * 15 }) // 24 Hrs
                 return res.status(200).json({
                     status: "success",
                     response: authToken
