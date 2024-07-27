@@ -54,7 +54,7 @@ const login = async (req, res) => {
 
             if (password === user.password) {
                 const authToken = await promisifiedJWTSign({ id: user._id }, JWT_SECRET)
-                res.cookie('jwt', authToken, { maxAge: 1000 * 60 * 60 * 24 }) // 24 Hrs
+                res.cookie('jwt', authToken, { maxAge: 1000 * 15 }) // 24 Hrs
                 return res.status(200).json({
                     status: "success",
                     response: authToken
