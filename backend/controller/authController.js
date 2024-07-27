@@ -46,7 +46,7 @@ const login = async (req, res) => {
             const user = await User.findOne({ email: email })
 
             if (!user || user?.password !== password)
-                return res.status(400).json({
+                return res.status(403).json({
                     status: "failure",
                     error: "Email or Password does not match"
                 })
