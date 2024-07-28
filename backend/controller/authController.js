@@ -1,33 +1,41 @@
 const jwt = require('jsonwebtoken')
+const crypto = require('crypto');
 const dotenv = require('dotenv')
 const User = require('../model/userModel')
 const emailHelper = require('../utils/mailer')
 const generateOTP = require('../utils/otpGenerator')
-const promisify = require('util').promisify
 const { WELCOME_TEMPLATE, OTP_TEMPLATE } = require('../utils/templates')
 
 dotenv.config()
-const promisifiedJWTSign = promisify(jwt.sign)
-const promisifiedJWTVerify = promisify(jwt.verify)
 const { JWT_SECRET } = process.env
 
 const signup = async (req, res) => {
-    try {
 
-        const body = req.body
-        const newUser = await User.create(body)
-        res.status(201).json({
-            status: "success",
-            response: newUser
-        })
-        await emailHelper(WELCOME_TEMPLATE, newUser.email, { username: newUser.name })
-    }
-    catch (err) {
-        return res.status(400).json({
-            status: "failure",
-            error: err.message
-        })
-    }
+    const salt = crypto.randomBytes(16);
+    crypto.pbkdf2(req.body.password, salt, 310000, 32, 'sha256', async (err, hashedPassword) => {
+
+        try {
+            if (err) throw err
+
+            const body = req.body
+            const newUser = await User.create({
+                ...body,
+                password: hashedPassword,
+                salt
+            })
+            res.status(201).json({
+                status: "success",
+                response: newUser
+            })
+            await emailHelper(WELCOME_TEMPLATE, newUser.email, { username: newUser.name })
+        }
+        catch (err) {
+            return res.status(400).json({
+                status: "failure",
+                error: err.message
+            })
+        }
+    });
 }
 
 const login = async (req, res) => {
@@ -45,21 +53,45 @@ const login = async (req, res) => {
         if (email) {
             const user = await User.findOne({ email: email })
 
-            if (!user || user?.password !== password)
+            if (!user)
                 return res.status(403).json({
                     status: "failure",
                     error: "Email or Password does not match"
-                })
+                });
 
+            crypto.pbkdf2(password, user.salt, 310000, 32, 'sha256', function (err, hashedPassword) {
 
-            if (password === user.password) {
-                const authToken = await promisifiedJWTSign({ id: user._id }, JWT_SECRET)
-                res.cookie('jwt', authToken, { maxAge: 1000 * 15 }) // 24 Hrs
-                return res.status(200).json({
-                    status: "success",
-                    response: authToken
-                })
-            }
+                try {
+                    if (err) {
+                        return res.status(502).json({
+                            status: "failure",
+                            error: err.message
+                        })
+                    }
+
+                    if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
+                        return res.status(403).json({
+                            status: "failure",
+                            error: "Email or Password does not match"
+                        });
+                    }
+
+                    // Password is valid here
+                    const authToken = jwt.sign({ id: user._id }, JWT_SECRET)
+                    res.cookie('jwt', authToken, { maxAge: 1000 * 15 }) // miliSec * sec * min * hr * day
+                    return res.status(200).json({
+                        status: "success",
+                        response: authToken
+                    })
+
+                }
+                catch (err) {
+                    return res.status(502).json({
+                        status: "failure",
+                        error: err.message
+                    })
+                }
+            });
         }
     }
     catch (err) {
@@ -69,8 +101,6 @@ const login = async (req, res) => {
         })
     }
 }
-
-
 
 
 const exampleProtectedPath = async (req, res) => {

@@ -7,6 +7,7 @@ const productRouter = require('./router/productRouter');
 const userRouter = require('./router/userRouter')
 const authRouter = require('./router/authRouter')
 const cors = require('cors');
+const helmet = require('helmet')
 const passport = require('passport')
 require('./configs/passport')(passport)
 
@@ -21,6 +22,7 @@ mongoose.connect(dbURL).then((conn) => {
 
 const app = express();
 
+app.use(helmet())
 app.use(cors())
 app.use(bodyParser.json());
 app.use(cookieParser())
