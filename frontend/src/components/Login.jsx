@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Form, Row, Col } from "react-bootstrap";
-import { login } from "../redux/slices/authSlice";
+import { clearToken, login } from "../redux/slices/authSlice";
 import {
   selectAuthToken,
   selectAuthState,
@@ -11,35 +11,45 @@ import { resetError } from "../redux/slices/authSlice";
 import FormContainer from "./common/FormContainer";
 import Message from "./Message";
 import { Link } from "react-router-dom";
+import cookieParser from "../utils/cookieParser";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
+  let authToken = useSelector(selectAuthToken);
+
+  const { error } = useSelector(selectAuthState);
 
   const redirect = location.search ? location.search.split("=")[1] : "/";
 
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(login({ email, password }));
-    resetInputFields();
   };
 
-  const resetInputFields = () => {
-    setEmail("");
-    setPassword("");
+  const handleLogin = () => {
     dispatch(resetError());
   };
 
-  const { error } = useSelector(selectAuthState);
+  useEffect(() => {
+    if (!cookieParser().jwt) {
+      dispatch(clearToken());
+      return;
+    }
+    if (authToken) {
+      navigate(redirect);
+    }
+  }, [navigate, redirect, authToken, dispatch]);
 
   return (
     <>
       {error ? (
         <Message variant="danger">
           {error}{" "}
-          <Link to="/login" onClick={resetInputFields}>
+          <Link to="/login" onClick={handleLogin}>
             Back to Login
           </Link>
         </Message>

@@ -6,7 +6,7 @@ export const login = createAsyncThunk(
     'auth/login',
     async ({ email, password }, thunkAPI) => {
         try {
-            const response = await _axios.post('/auth/login', { email, password })
+            const response = await _axios.post('/auth/login', { email, password }, { withCredentials: true })
             return response.data.response
         }
         catch (err) {
@@ -22,7 +22,8 @@ const authSlice = createSlice({
         authToken: null,
     },
     reducers: {
-        resetError: (state) => { state.error = null }
+        resetError: (state) => { state.error = null },
+        clearToken: (state) => { state.authToken = null }
     },
     extraReducers: (builder) => {
         builder
@@ -41,5 +42,5 @@ const authSlice = createSlice({
     }
 })
 
-export const { resetError } = authSlice.actions
+export const { resetError, clearToken } = authSlice.actions
 export default authSlice.reducer

@@ -22,8 +22,13 @@ mongoose.connect(dbURL).then((conn) => {
 
 const app = express();
 
+const corsOptions = {
+    origin: 'http://localhost:5173',
+    credentials: true,
+}
+
 app.use(helmet())
-app.use(cors())
+app.use(cors(corsOptions))
 app.use(bodyParser.json());
 app.use(cookieParser())
 app.use(passport.initialize())
