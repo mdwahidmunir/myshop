@@ -47,16 +47,16 @@ const Login = () => {
 
   return (
     <>
-      {error && (
-        <Message variant="danger">
-          {error}{" "}
-          <Link to="/login" onClick={handleLogin}>
-            <IoCloseSharp style={{ color: "#572120" }} />
-          </Link>
-        </Message>
-      )}
       <FormContainer>
         <h1>Log In</h1>
+        {error && (
+          <Message variant="danger">
+            {error}{" "}
+            <Link to="/login" onClick={handleLogin}>
+              <IoCloseSharp style={{ color: "#572120" }} />
+            </Link>
+          </Message>
+        )}
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="email" className="mb-3">
             <Form.Label>Email Address</Form.Label>
