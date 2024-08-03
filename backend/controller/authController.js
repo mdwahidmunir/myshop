@@ -23,13 +23,20 @@ const signup = async (req, res) => {
                 password: hashedPassword,
                 salt
             })
+            const authToken = jwt.sign({ id: newUser._id }, JWT_SECRET)
+            res.cookie('jwt', authToken, { maxAge: 1000 * 15 })
+
+            const { name, email } = newUser
+            const apiResponse = { name, email, authToken }
             res.status(201).json({
                 status: "success",
-                response: newUser
+                response: apiResponse,
             })
             await emailHelper(WELCOME_TEMPLATE, newUser.email, { username: newUser.name })
         }
         catch (err) {
+            if (err.code === 11000)
+                err.message = "Email already exists "
             return res.status(400).json({
                 status: "failure",
                 error: err.message

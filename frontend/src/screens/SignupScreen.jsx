@@ -1,15 +1,15 @@
 import Header from "../components/Header";
-import Login from "../components/Login";
+import Signup from "../components/Signup";
 import { Container } from "react-bootstrap";
 import Footer from "../components/Footer";
 
-const LoginScreen = () => {
+const SignupScreen = () => {
   return (
     <div>
       <Header />
       <main className="py-3">
         <Container>
-          <Login />
+          <Signup />
         </Container>
       </main>
       <Footer />
@@ -17,4 +17,4 @@ const LoginScreen = () => {
   );
 };
 
-export default LoginScreen;
+export default SignupScreen;
