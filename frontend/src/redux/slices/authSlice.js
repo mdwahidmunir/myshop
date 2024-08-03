@@ -6,10 +6,19 @@ export const login = createAsyncThunk(
     'auth/login',
     async ({ email, password }, thunkAPI) => {
         try {
-            const response = await _axios.post('/auth/login', { email, password })
+            const response = await _axios.post('/auth/login', { email, password }, { withCredentials: true })
+            console.log("Response :", response)
             return response.data.response
         }
         catch (err) {
+            /***
+             * err.response give you the entire axios response including header, status code, data
+             * err.response.data is the response you are getting from backend server
+             * For our case err.response.data is in form of {status:"123",error:"abcdef"}
+             */
+            const responseFromBackEndServer = err.response.data.error
+            if (responseFromBackEndServer)
+                err.message = responseFromBackEndServer
             return thunkAPI.rejectWithValue(err)
         }
     }
@@ -22,7 +31,8 @@ const authSlice = createSlice({
         authToken: null,
     },
     reducers: {
-        resetError: (state) => { state.error = null }
+        resetError: (state) => { state.error = null },
+        clearToken: (state) => { state.authToken = null }
     },
     extraReducers: (builder) => {
         builder
@@ -30,6 +40,7 @@ const authSlice = createSlice({
                 state.loading = true
             })
             .addCase(login.rejected, (state, action) => {
+                console.log("INside reducer error ", action.payload)
                 state.loading = false
                 state.error = action.payload.message ? action.payload.message : action.payload
             })
@@ -41,5 +52,5 @@ const authSlice = createSlice({
     }
 })
 
-export const { resetError } = authSlice.actions
+export const { resetError, clearToken } = authSlice.actions
 export default authSlice.reducer

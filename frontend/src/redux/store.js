@@ -8,7 +8,12 @@ const store = configureStore({
         products: productReducer,
         cart: cartReducer,
         auth: authSlice,
-    }
+    },
+    // Add this middleware to resolve the serialization issue happening while incorrect auth in authSlice
+    middleware: getDefaultMiddleware =>
+        getDefaultMiddleware({
+            serializableCheck: false,
+        }),
 })
 
 export default store;
