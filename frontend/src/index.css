@@ -52,4 +52,8 @@ margin: 0 auto;
   font-size: 2.5vw;
 }
 }
+.fas-danger-close{
+  color: "#572120"; 
+  cursor: pointer;
+}
 

@@ -6,6 +6,7 @@ import ProductScreen from "./screens/ProductScreen";
 import store from "./redux/store";
 import CartScreen from "./screens/CartScreen";
 import LoginScreen from "./screens/LoginScreen";
+import SignupScreen from "./screens/SignupScreen";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/cart/:id?" element={<CartScreen />} />
             <Route path="/login" element={<LoginScreen />} />
+            <Route path="/register" element={<SignupScreen />} />
           </Routes>
         </BrowserRouter>
       </Provider>

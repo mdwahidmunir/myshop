@@ -7,7 +7,6 @@ export const login = createAsyncThunk(
     async ({ email, password }, thunkAPI) => {
         try {
             const response = await _axios.post('/auth/login', { email, password }, { withCredentials: true })
-            console.log("Response :", response)
             return response.data.response
         }
         catch (err) {
@@ -23,6 +22,23 @@ export const login = createAsyncThunk(
         }
     }
 )
+
+export const signup = createAsyncThunk(
+    'auth/signup',
+    async ({ name, email, password, confirmPassword }, thunkAPI) => {
+        try {
+            const response = await _axios.post('/auth/signup', { name, email, password, confirmPassword }, { withCredentials: true })
+            return response.data.response.authToken
+        }
+        catch (err) {
+            const responseFromBackEndServer = err.response.data.error
+            if (responseFromBackEndServer)
+                err.message = responseFromBackEndServer
+            return thunkAPI.rejectWithValue(err)
+        }
+    }
+)
+
 const authSlice = createSlice({
     name: 'auth',
     initialState: {
@@ -42,13 +58,25 @@ const authSlice = createSlice({
                 state.loading = true
             })
             .addCase(login.rejected, (state, action) => {
-                console.log("INside reducer error ", action.payload)
                 state.loading = false
                 state.error = action.payload.message ? action.payload.message : action.payload
             })
             .addCase(login.fulfilled, (state, action) => {
                 state.loading = false
                 state.error = null
+                state.authToken = action.payload
+            })
+            .addCase(signup.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(signup.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload.message ? action.payload.message : action.payload
+                state.authToken = null
+            })
+            .addCase(signup.fulfilled, (state, action) => {
+                state.error = null
+                state.loading = true
                 state.authToken = action.payload
             })
     }

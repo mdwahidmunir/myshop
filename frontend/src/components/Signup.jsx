@@ -4,9 +4,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import {
   clearToken,
-  login,
   setAuthError,
   setAuthToken,
+  signup,
 } from "../redux/slices/authSlice";
 import {
   selectAuthToken,
@@ -19,25 +19,60 @@ import { Link } from "react-router-dom";
 import cookieParser from "../utils/cookieParser";
 import { IoCloseSharp } from "react-icons/io5";
 
-const Login = () => {
+const Signup = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
+
   let authToken = useSelector(selectAuthToken);
-
   const { error } = useSelector(selectAuthState);
-
   const redirect = location.search ? location.search.split("=")[1] : "/";
+
+  const areEmptyFieldsPresent = () => {
+    if (
+      name.trim() === "" ||
+      email.trim() === "" ||
+      password.trim() === "" ||
+      confirmPassword.trim() === "" ||
+      !name ||
+      !email ||
+      !password ||
+      !confirmPassword
+    )
+      return true;
+    return false;
+  };
+
+  const isPwdAndConfPwdMismatch = () => {
+    return password !== confirmPassword;
+  };
+
+  const isLessThanRequiredLength = (element, minLength) => {
+    return element.length < minLength;
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
-    if (email.trim() === "" || password.trim() === "") {
-      dispatch(setAuthError("Email or Password cant be empty"));
+
+    // Validators
+    if (areEmptyFieldsPresent()) {
+      dispatch(setAuthError("Fields cant be left empty"));
       return;
     }
-    dispatch(login({ email, password }));
+    if (isPwdAndConfPwdMismatch()) {
+      dispatch(setAuthError("Password and Confirm Password does not match"));
+      return;
+    }
+    if (isLessThanRequiredLength(password, 8)) {
+      dispatch(setAuthError("Password should be of minimum 8 charecters"));
+      return;
+    }
+
+    dispatch(signup({ name, email, password, confirmPassword }));
   };
 
   const handleCloseClick = () => {
@@ -52,11 +87,9 @@ const Login = () => {
       const currentToken = cookieParser().jwt;
       dispatch(setAuthToken(currentToken));
     }
-
     if (authToken) {
       navigate(redirect);
     }
-
     return () => {
       dispatch(resetError());
     };
@@ -65,18 +98,27 @@ const Login = () => {
   return (
     <>
       <FormContainer>
-        <h1>Log In</h1>
+        <h1>Sign up</h1>
         {error && (
           <Message variant="danger">
             {error}{" "}
-            <span onClick={handleCloseClick}>
+            <span to="/login" onClick={handleCloseClick}>
               <IoCloseSharp className="fas-danger-close" />
             </span>
           </Message>
         )}
         <Form onSubmit={submitHandler}>
+          <Form.Group controlId="name" className="mb-3">
+            <Form.Label>Name *</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </Form.Group>
           <Form.Group controlId="email" className="mb-3">
-            <Form.Label>Email Address</Form.Label>
+            <Form.Label>Email Address *</Form.Label>
             <Form.Control
               type="email"
               placeholder="Enter Email"
@@ -86,7 +128,7 @@ const Login = () => {
           </Form.Group>
 
           <Form.Group controlId="password" className="mb-3">
-            <Form.Label>Password</Form.Label>
+            <Form.Label>Password *</Form.Label>
             <Form.Control
               type="password"
               placeholder="Enter Password"
@@ -95,19 +137,25 @@ const Login = () => {
             />
           </Form.Group>
 
+          <Form.Group controlId="confirmPassword" className="mb-3">
+            <Form.Label>Confirm Password *</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </Form.Group>
+
           <Row className="py-3">
             <Col>
-              New User ? &nbsp;
-              <Link
-                to={redirect ? `/register?redirect=${redirect}` : "/register"}
-              >
-                Register
-              </Link>
+              Already a user ? &nbsp;
+              <Link to={"/login"}>Log In</Link>
             </Col>
           </Row>
 
           <Button type="submit" variant="primary">
-            Log In
+            Sign Up
           </Button>
         </Form>
       </FormContainer>
@@ -115,4 +163,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
