@@ -31,6 +31,7 @@ const authSlice = createSlice({
         authToken: null,
     },
     reducers: {
+        setAuthError: (state, action) => { state.error = action.payload },
         resetError: (state) => { state.error = null },
         clearToken: (state) => { state.authToken = null }
     },
@@ -52,5 +53,5 @@ const authSlice = createSlice({
     }
 })
 
-export const { resetError, clearToken } = authSlice.actions
+export const { resetError, clearToken, setAuthError } = authSlice.actions
 export default authSlice.reducer

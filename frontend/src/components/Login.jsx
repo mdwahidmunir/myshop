@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Form, Row, Col } from "react-bootstrap";
-import { clearToken, login } from "../redux/slices/authSlice";
+import { clearToken, login, setAuthError } from "../redux/slices/authSlice";
 import {
   selectAuthToken,
   selectAuthState,
@@ -28,6 +28,10 @@ const Login = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    if (email.trim() === "" || password.trim() === "") {
+      dispatch(setAuthError("Email or Password cant be empty"));
+      return;
+    }
     dispatch(login({ email, password }));
   };
 
