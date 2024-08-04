@@ -7,6 +7,7 @@ import store from "./redux/store";
 import CartScreen from "./screens/CartScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
+import ProtectedRoutes from "./components/common/ProtectedRoutes";
 
 function App() {
   return (
@@ -16,7 +17,14 @@ function App() {
           <Routes>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/product/:id" element={<ProductScreen />} />
-            <Route path="/cart/:id?" element={<CartScreen />} />
+            <Route
+              path="/cart/:id?"
+              element={
+                <ProtectedRoutes>
+                  <CartScreen />
+                </ProtectedRoutes>
+              }
+            />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<SignupScreen />} />
           </Routes>
