@@ -30,7 +30,9 @@ const Signup = () => {
 
   let authToken = useSelector(selectAuthToken);
   const { error } = useSelector(selectAuthState);
-  const redirect = location.search ? location.search.split("=")[1] : "/";
+  const redirect = location.search
+    ? location.search.split("?redirect=")[1]
+    : "/";
 
   const areEmptyFieldsPresent = () => {
     if (
