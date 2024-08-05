@@ -12,7 +12,7 @@ const passport = require('passport')
 require('./configs/passport')(passport)
 
 dotenv.config()
-const { MONGO_URI: dbURL } = process.env
+const { MONGO_URI: dbURL, FRONTEND_URL, FRONTEND_PORT } = process.env
 
 mongoose.connect(dbURL).then((conn) => {
     console.log("MongoDB successfully connected...");
@@ -23,7 +23,7 @@ mongoose.connect(dbURL).then((conn) => {
 const app = express();
 
 const corsOptions = {
-    origin: 'http://localhost:5173',
+    origin: `${FRONTEND_URL}:${FRONTEND_PORT}`,
     credentials: true,
 }
 
