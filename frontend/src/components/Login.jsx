@@ -29,7 +29,9 @@ const Login = () => {
 
   const { error } = useSelector(selectAuthState);
 
-  const redirect = location.search ? location.search.split("=")[1] : "/";
+  const redirect = location.search
+    ? location.search.split("?redirect=")[1]
+    : "/";
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -60,7 +62,7 @@ const Login = () => {
     return () => {
       dispatch(resetError());
     };
-  }, [navigate, redirect, authToken, dispatch]);
+  }, [navigate, redirect, authToken, dispatch, location]);
 
   return (
     <>
