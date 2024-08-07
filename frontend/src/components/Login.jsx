@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import {
-  clearToken,
   login,
   setAuthError,
   setAuthToken,
+  logout,
 } from "../redux/slices/authSlice";
 import {
   selectAuthToken,
@@ -48,7 +48,7 @@ const Login = () => {
 
   useEffect(() => {
     if (!cookieParser().jwt) {
-      dispatch(clearToken());
+      dispatch(logout());
     }
     if (!authToken && cookieParser().jwt) {
       const currentToken = cookieParser().jwt;
