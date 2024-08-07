@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import _axios from "../../utils/axiosHelper";
+import { getUserAsync, resetUser } from "./userSlice";
+
 
 
 export const login = createAsyncThunk(
@@ -7,6 +9,7 @@ export const login = createAsyncThunk(
     async ({ email, password }, thunkAPI) => {
         try {
             const response = await _axios.post('/auth/login', { email, password }, { withCredentials: true })
+            thunkAPI.dispatch(getUserAsync());
             return response.data.response
         }
         catch (err) {
@@ -39,13 +42,23 @@ export const signup = createAsyncThunk(
     }
 )
 
+export const logout = createAsyncThunk(
+    'auth/logout',
+    async (_, thunkAPI) => {
+        thunkAPI.dispatch(clearToken())
+        thunkAPI.dispatch(resetUser())
+    }
+)
+
+const initialState = {
+    error: null,
+    loading: false,
+    authToken: null,
+}
+
 const authSlice = createSlice({
     name: 'auth',
-    initialState: {
-        error: null,
-        loading: false,
-        authToken: null,
-    },
+    initialState,
     reducers: {
         setAuthError: (state, action) => { state.error = action.payload },
         resetError: (state) => { state.error = null },

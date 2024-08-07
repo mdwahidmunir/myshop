@@ -85,7 +85,7 @@ const login = async (req, res) => {
 
                     // Password is valid here
                     const authToken = jwt.sign({ id: user._id }, JWT_SECRET)
-                    res.cookie('jwt', authToken, { maxAge: 1000 * 15 }) // miliSec * sec * min * hr * day
+                    res.cookie('jwt', authToken, { maxAge: 1000 * 60 * 2 }) // miliSec * sec * min * hr * day
                     return res.status(200).json({
                         status: "success",
                         response: authToken

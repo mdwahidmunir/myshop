@@ -3,7 +3,7 @@ import { selectAuthToken } from "../../redux/selectors/authSelector";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import cookieParser from "../../utils/cookieParser";
-import { clearToken, setAuthToken } from "../../redux/slices/authSlice";
+import { logout, setAuthToken } from "../../redux/slices/authSlice";
 import LoginScreen from "../../screens/LoginScreen";
 
 const ProtectedRoutes = ({ children }) => {
@@ -19,7 +19,7 @@ const ProtectedRoutes = ({ children }) => {
 
   useEffect(() => {
     if (!cookieParser().jwt) {
-      dispatch(clearToken());
+      dispatch(logout());
     }
     if (!authToken && cookieParser().jwt) {
       const currentToken = cookieParser().jwt;
