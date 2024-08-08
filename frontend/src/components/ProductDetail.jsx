@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { clearProduct, fetchProductById } from "../redux/slices/productSlice";
 import { selectProductById } from "../redux/selectors/productSelector";
 import { useDispatch, useSelector } from "react-redux";
-// import { addToCart } from "../redux/slices/cartSlice";
+import LazyImage from "./common/LazyImage";
 
 function ProductDetail() {
   const { id } = useParams();
@@ -33,7 +33,12 @@ function ProductDetail() {
         <div>
           <Row>
             <Col md={6}>
-              <Image src={product.image} alt={product.name} fluid />
+              {/* <Image src={product.image} alt={product.name} fluid /> */}
+              <LazyImage
+                src={product.image}
+                alt={product.name}
+                className="card-img-top"
+              />
             </Col>
 
             <Col md={3}>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Loader from "../Loader";
 
 function LazyImage({ src, alt, ...rest }) {
   const [loaded, setLoaded] = useState(false);
