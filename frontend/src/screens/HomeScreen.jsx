@@ -1,7 +1,9 @@
+import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import ProductList from "../components/ProductList";
 import { Container } from "react-bootstrap";
+import Loader from "../components/Loader";
+const LazyProductList = React.lazy(() => import("../components/ProductList"));
 
 function HomeScreen() {
   return (
@@ -10,7 +12,9 @@ function HomeScreen() {
         <Header />
         <main className="py-3">
           <Container>
-            <ProductList />
+            <React.Suspense fallback={<Loader />}>
+              <LazyProductList />
+            </React.Suspense>
           </Container>
         </main>
         <Footer />
