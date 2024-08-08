@@ -1,13 +1,19 @@
-import { Card } from "react-bootstrap";
+import { Card, Image } from "react-bootstrap";
 import Rating from "./Rating";
 import { Link } from "react-router-dom";
+import LazyImage from "./common/LazyImage";
 
 function Product({ product }) {
   return (
     <div>
       <Card className="my-3 p-3 rounded">
         <Link to={`/product/${product._id}`}>
-          <Card.Img src={product.image} />
+          {/* <Card.Img src={product.image} /> */}
+          <LazyImage
+            src={product.image}
+            alt={product.name}
+            className="card-img-top"
+          />
         </Link>
 
         <Card.Body>
