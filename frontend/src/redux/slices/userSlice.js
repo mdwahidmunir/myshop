@@ -20,9 +20,9 @@ export const getUserAsync = createAsyncThunk(
 const initialState = {
     loading: false,
     user: {
-        name: null,
-        email: null,
-        role: null,
+        // name: null,
+        // email: null,
+        // role: null,
     },
     error: null
 }
@@ -33,9 +33,9 @@ const userSlice = createSlice({
     reducers: {
         setUser: (state, action) => {
             const { name, email, role } = action.payload
-            state.name = name
-            state.email = email
-            state.role = role ? role : 'user'
+            state.user.name = name
+            state.user.email = email
+            state.user.role = role ? role : 'user'
         },
         resetUser: () => initialState
     },
