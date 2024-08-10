@@ -1,51 +1,42 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Form, Row, Col } from "react-bootstrap";
-import {
-  logout,
-  setAuthError,
-  setAuthToken,
-  signup,
-} from "../redux/slices/authSlice";
-import {
-  selectAuthToken,
-  selectAuthState,
-} from "../redux/selectors/authSelector";
-import { resetError } from "../redux/slices/authSlice";
-import FormContainer from "./common/FormContainer";
+import { selectAuthState } from "../redux/selectors/authSelector";
+import { selectUserInfo } from "../redux/selectors/userSelector";
+import { logout, resetError, setAuthError } from "../redux/slices/authSlice";
 import Message from "./Message";
-import { Link } from "react-router-dom";
-import cookieParser from "../utils/cookieParser";
+import { ToastContainer, toast } from "react-toastify";
 import { IoCloseSharp } from "react-icons/io5";
+import { updateUserAsync } from "../redux/slices/userSlice";
+import "react-toastify/dist/ReactToastify.css";
+import { isLoggedIn } from "../utils/cookieParser";
 
-const Signup = () => {
-  const [name, setName] = useState("");
+const Profile = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [disablePasswordSection, setDisablePasswordSection] = useState(true);
   const dispatch = useDispatch();
-  const location = useLocation();
-  const navigate = useNavigate();
 
-  let authToken = useSelector(selectAuthToken);
   const { error } = useSelector(selectAuthState);
-  const redirect = location.search
-    ? location.search.split("?redirect=")[1]
-    : "/";
 
   const areEmptyFieldsPresent = () => {
     if (
       name.trim() === "" ||
       email.trim() === "" ||
-      password.trim() === "" ||
-      confirmPassword.trim() === "" ||
       !name ||
       !email ||
-      !password ||
-      !confirmPassword
-    )
+      (!disablePasswordSection &&
+        (password.trim() === "" ||
+          confirmPassword.trim() === "" ||
+          !name ||
+          !email ||
+          !password ||
+          !confirmPassword))
+    ) {
       return true;
+    }
     return false;
   };
 
@@ -57,50 +48,68 @@ const Signup = () => {
     return element.length < minLength;
   };
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
+    if (!isLoggedIn()) {
+      dispatch(logout());
+      return;
+    }
 
     // Validators
     if (areEmptyFieldsPresent()) {
       dispatch(setAuthError("Fields cant be left empty"));
       return;
     }
-    if (isLessThanRequiredLength(password, 8)) {
+    if (!disablePasswordSection && isLessThanRequiredLength(password, 8)) {
       dispatch(setAuthError("Password should be of minimum 8 charecters"));
       return;
     }
-    if (isPwdAndConfPwdMismatch()) {
+    if (!disablePasswordSection && isPwdAndConfPwdMismatch()) {
       dispatch(setAuthError("Password and Confirm Password does not match"));
       return;
     }
 
-    dispatch(signup({ name, email, password, confirmPassword }));
+    let reqBody = {
+      name,
+      email,
+    };
+    if (!disablePasswordSection)
+      reqBody = { ...reqBody, password, confirmPassword };
+
+    const response = await dispatch(updateUserAsync(reqBody));
+
+    // Resetting the field so as to show user some action took place
+    if (!disablePasswordSection) {
+      setPassword("");
+      setConfirmPassword("");
+    }
+    if (response.type === updateUserAsync.fulfilled.toString()) {
+      toast.success("Profile updated successfully!", { autoClose: 3000 });
+    } else {
+      toast.error("Failed to update profile", { autoClose: 3000 });
+    }
   };
 
   const handleCloseClick = () => {
     dispatch(resetError());
   };
 
+  const switchHandler = () => {
+    setDisablePasswordSection((prevState) => !prevState);
+  };
+
+  const userInfo = useSelector(selectUserInfo);
+
   useEffect(() => {
-    if (!cookieParser().jwt) {
-      dispatch(logout());
-    }
-    if (!authToken && cookieParser().jwt) {
-      const currentToken = cookieParser().jwt;
-      dispatch(setAuthToken(currentToken));
-    }
-    if (authToken) {
-      navigate(redirect);
-    }
-    return () => {
-      dispatch(resetError());
-    };
-  }, [navigate, redirect, authToken, dispatch]);
+    setName(userInfo.name);
+    setEmail(userInfo.email);
+  }, [userInfo]);
 
   return (
-    <>
-      <FormContainer>
-        <h1>Sign up</h1>
+    <Row>
+      <ToastContainer />
+      <Col md={3}>
+        <h2>User Profile</h2>
         {error && (
           <Message variant="danger">
             {error}{" "}
@@ -109,7 +118,6 @@ const Signup = () => {
             </span>
           </Message>
         )}
-
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="name" className="mb-3">
             <Form.Label>Name *</Form.Label>
@@ -131,9 +139,19 @@ const Signup = () => {
             />
           </Form.Group>
 
+          <Form.Group controlId="password-switch" className="mb-3">
+            <Form.Check
+              type="switch"
+              id="custom-switch"
+              label="Change Password ?"
+              onChange={switchHandler}
+            />
+          </Form.Group>
+
           <Form.Group controlId="password" className="mb-3">
             <Form.Label>Password *</Form.Label>
             <Form.Control
+              disabled={disablePasswordSection}
               type="password"
               placeholder="Enter Password"
               value={password}
@@ -144,6 +162,7 @@ const Signup = () => {
           <Form.Group controlId="confirmPassword" className="mb-3">
             <Form.Label>Confirm Password *</Form.Label>
             <Form.Control
+              disabled={disablePasswordSection}
               type="password"
               placeholder="Confirm Password"
               value={confirmPassword}
@@ -151,20 +170,17 @@ const Signup = () => {
             />
           </Form.Group>
 
-          <Row className="py-3">
-            <Col>
-              Already a user ? &nbsp;
-              <Link to={"/login"}>Log In</Link>
-            </Col>
-          </Row>
-
           <Button type="submit" variant="primary">
-            Sign Up
+            Update
           </Button>
         </Form>
-      </FormContainer>
-    </>
+      </Col>
+
+      <Col md={9}>
+        <h2>Orders</h2>
+      </Col>
+    </Row>
   );
 };
 
-export default Signup;
+export default Profile;
