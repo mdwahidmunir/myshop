@@ -62,7 +62,10 @@ const authSlice = createSlice({
     reducers: {
         setAuthError: (state, action) => { state.error = action.payload },
         resetError: (state) => { state.error = null },
-        clearToken: (state) => { state.authToken = null },
+        clearToken: (state) => {
+            document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;"
+            state.authToken = null
+        },
         setAuthToken: (state, action) => { state.authToken = action.payload }
     },
     extraReducers: (builder) => {
