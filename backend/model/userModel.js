@@ -2,25 +2,25 @@ const crypto = require('crypto')
 const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        unique: true,
-        required: true
-    },
-    password: {
-        type: Buffer,
-        required: true,
-    },
-    salt: Buffer,
-    role: {
-        type: String,
-        default: "user"
-    },
-    otpExpiry: Date
+  name: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  password: {
+    type: Buffer,
+    required: true,
+  },
+  salt: Buffer,
+  role: {
+    type: String,
+    default: "user"
+  },
+  otpExpiry: Date
 })
 
 
@@ -92,34 +92,56 @@ In summary, the virtual field confirmPassword allows you to handle the password 
 
  * ** */
 userSchema.virtual('confirmPassword').set(function (value) {
-    this._confirmPassword = value;
+  this._confirmPassword = value;
 }).get(function () {
-    return this._confirmPassword;
+  return this._confirmPassword;
 });
 
 // Pre-save hook to validate passwords
 userSchema.pre('save', async function (next) {
-    if (!this.isModified('password')) {
-        return next();
-    }
+  if (!this.isModified('password')) {
+    return next();
+  }
 
-    try {
-        const hashedConfirmPassword = crypto.pbkdf2Sync(this._confirmPassword, this.salt, 310000, 32, 'sha256');
-        if (!crypto.timingSafeEqual(this.password, hashedConfirmPassword)) {
-            throw new Error('Password and Confirm Password do not match');
-        }
-        next();
-    } catch (err) {
-        next(err);
+  try {
+    const hashedConfirmPassword = crypto.pbkdf2Sync(this._confirmPassword, this.salt, 310000, 32, 'sha256');
+    if (!crypto.timingSafeEqual(this.password, hashedConfirmPassword)) {
+      throw new Error('Password and Confirm Password do not match');
     }
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+// Pre-save hook to validate passwords
+userSchema.pre('findOneAndUpdate', async function (next) {
+  const update = this.getUpdate();
+  if (update.password) {
+    try {
+      const document = await this.model.findOne(this.getQuery());
+      const { salt } = document;
+
+      const hashedConfirmPassword = crypto.pbkdf2Sync(update.confirmPassword, salt, 310000, 32, 'sha256');
+
+      if (!crypto.timingSafeEqual(update.password, hashedConfirmPassword)) {
+        throw new Error('Password and Confirm Password do not match');
+      }
+
+    } catch (err) {
+      return next(err);
+    }
+  }
+  next();
 });
 
 
 const User = new mongoose.model('UserModel', userSchema)
 
 userSchema.pre('save', function (next) {
-    delete this.confirmPassword
-    next()
+  delete this.confirmPassword
+  next()
 })
 
 module.exports = User

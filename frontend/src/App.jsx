@@ -8,6 +8,7 @@ import CartScreen from "./screens/CartScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import ProtectedRoutes from "./components/common/ProtectedRoutes";
+import ProfileScreen from "./screens/ProfileScreen";
 
 function App() {
   return (
@@ -27,6 +28,14 @@ function App() {
             />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<SignupScreen />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoutes>
+                  <ProfileScreen />
+                </ProtectedRoutes>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </Provider>

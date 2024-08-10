@@ -9,6 +9,23 @@ export const getUserAsync = createAsyncThunk(
             return response.data.response
         }
         catch (err) {
+            const responseFromBackEndServer = err.response.data.error || err.message
+            if (responseFromBackEndServer)
+                err.message = responseFromBackEndServer
+            return thunkAPI.rejectWithValue(err)
+        }
+    }
+)
+
+
+export const updateUserAsync = createAsyncThunk(
+    'user/getUser',
+    async (req, thunkAPI) => {
+        try {
+            const response = await _axios.patch('/users/user', req, { withCredentials: true })
+            return response.data.response
+        }
+        catch (err) {
             const responseFromBackEndServer = err.response.data.error
             if (responseFromBackEndServer)
                 err.message = responseFromBackEndServer
