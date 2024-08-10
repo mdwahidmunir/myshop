@@ -2,6 +2,7 @@ import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
 import { selectUserName } from "../redux/selectors/userSelector";
+import { selectIsLoggedIn } from "../redux/selectors/authSelector";
 import { useEffect } from "react";
 import { getUserAsync } from "../redux/slices/userSlice";
 import { logout } from "../redux/slices/authSlice";
@@ -9,6 +10,7 @@ import { logout } from "../redux/slices/authSlice";
 function Header() {
   const dispatch = useDispatch();
   const userName = useSelector(selectUserName);
+  const isAuthenticated = useSelector(selectIsLoggedIn);
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -16,8 +18,10 @@ function Header() {
   };
 
   useEffect(() => {
-    if (!userName) dispatch(getUserAsync());
-  }, [userName, dispatch]);
+    if (!userName && isAuthenticated) {
+      dispatch(getUserAsync());
+    }
+  }, [isAuthenticated, userName, dispatch]);
 
   return (
     <header>

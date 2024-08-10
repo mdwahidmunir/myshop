@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import _axios from "../../utils/axiosHelper";
 import { getUserAsync, resetUser } from "./userSlice";
+import cookieParser from "../../utils/cookieParser";
 
 
 
@@ -9,7 +10,7 @@ export const login = createAsyncThunk(
     async ({ email, password }, thunkAPI) => {
         try {
             const response = await _axios.post('/auth/login', { email, password }, { withCredentials: true })
-            thunkAPI.dispatch(getUserAsync());
+            await thunkAPI.dispatch(getUserAsync());
             return response.data.response
         }
         catch (err) {
@@ -53,7 +54,8 @@ export const logout = createAsyncThunk(
 const initialState = {
     error: null,
     loading: false,
-    authToken: null,
+    authToken: cookieParser().jwt || null,
+    isLoggedIn: cookieParser().jwt ? true : false
 }
 
 const authSlice = createSlice({
@@ -65,6 +67,7 @@ const authSlice = createSlice({
         clearToken: (state) => {
             document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;"
             state.authToken = null
+            state.isLoggedIn = false
         },
         setAuthToken: (state, action) => { state.authToken = action.payload }
     },
@@ -76,11 +79,13 @@ const authSlice = createSlice({
             .addCase(login.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload.message ? action.payload.message : action.payload
+                state.isLoggedIn = false
             })
             .addCase(login.fulfilled, (state, action) => {
                 state.loading = false
                 state.error = null
                 state.authToken = action.payload
+                state.isLoggedIn = !!action.payload
             })
             .addCase(signup.pending, (state) => {
                 state.loading = true
@@ -89,11 +94,13 @@ const authSlice = createSlice({
                 state.loading = false
                 state.error = action.payload.message ? action.payload.message : action.payload
                 state.authToken = null
+                state.isLoggedIn = false
             })
             .addCase(signup.fulfilled, (state, action) => {
                 state.error = null
                 state.loading = true
                 state.authToken = action.payload
+                state.isLoggedIn = !!action.payload
             })
     }
 })
