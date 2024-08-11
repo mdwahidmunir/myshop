@@ -51,11 +51,32 @@ export const logout = createAsyncThunk(
     }
 )
 
+export const sendOTPAsync = createAsyncThunk(
+    'user/sendOTP',
+    async (email, thunkAPI) => {
+        try {
+            const response = await _axios.post('/auth/sendOTP', { email })
+            return response.data.response
+        }
+        catch (err) {
+            const responseFromBackEndServer = err.response.data.error || err.message
+            if (responseFromBackEndServer)
+                err.message = responseFromBackEndServer
+            return thunkAPI.rejectWithValue(err)
+        }
+    }
+)
+
 const initialState = {
     error: null,
     loading: false,
     authToken: cookieParser().jwt || null,
-    isLoggedIn: cookieParser().jwt ? true : false
+    isLoggedIn: cookieParser().jwt ? true : false,
+    otpStatus: {
+        sending: false,
+        countDown: 0, // countDown in seconds
+        message: null,
+    }
 }
 
 const authSlice = createSlice({
@@ -69,7 +90,18 @@ const authSlice = createSlice({
             state.authToken = null
             state.isLoggedIn = false
         },
-        setAuthToken: (state, action) => { state.authToken = action.payload }
+        setAuthToken: (state, action) => { state.authToken = action.payload },
+        decOTPCountDown: (state) => {
+            if (state.otpStatus.countDown > 0) {
+                state.otpStatus.countDown -= 1
+            }
+        },
+        resetToast: (state) => {
+            state.error = null
+            state.loading = false
+            state.otpStatus.pending = false
+            state.otpStatus.message = null
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -102,8 +134,24 @@ const authSlice = createSlice({
                 state.authToken = action.payload
                 state.isLoggedIn = !!action.payload
             })
+            .addCase(sendOTPAsync.pending, (state) => {
+                state.loading = true
+                state.otpStatus.sending = true
+                state.otpStatus.message = null
+            })
+            .addCase(sendOTPAsync.rejected, (state, action) => {
+                state.loading = false
+                state.otpStatus.sending = false
+                state.error = action.payload.message ? action.payload.message : action.payload
+            })
+            .addCase(sendOTPAsync.fulfilled, (state, action) => {
+                state.loading = false
+                state.otpStatus.sending = false
+                state.otpStatus.countDown = action.payload.tenure || 60
+                state.otpStatus.message = action.payload.message
+            })
     }
 })
 
-export const { resetError, clearToken, setAuthError, setAuthToken } = authSlice.actions
+export const { resetError, resetToast, clearToken, setAuthError, setAuthToken, decOTPCountDown } = authSlice.actions
 export default authSlice.reducer

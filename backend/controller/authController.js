@@ -110,6 +110,61 @@ const login = async (req, res) => {
 }
 
 
+const sendOTP = async (req, res) => {
+    try {
+        const { email } = req.body
+        try {
+            if (!email)
+                throw new Error("Email is empty")
+
+            const otpTenureInSecs = 60 * 0.5 // in secs 
+            const user = await User.findOne({ email })
+
+            // Here we are purposely setting status 200 so as to not allow the hackers trial and error of mails.
+            // Though we show mail sent but we will not send the mail as there is no point in sending to unregistered mail
+            if (!user)
+                return res.status(200).json({
+                    status: "success",
+                    response: {
+                        message: "Mail sent to the registered mail",
+                        tenure: otpTenureInSecs
+                    }
+                })
+
+            const username = user.name;
+            const otp = await generateOTP(7);
+            user.otp = otp;
+            user.otpExpiry = new Date(Date.now() + 1000 * otpTenureInSecs);
+            await user.save();
+
+            await emailHelper(OTP_TEMPLATE, email, { username, otp });
+
+            return res.status(200).json({
+                status: 'success',
+                response: {
+                    message: 'Mail sent to the registered mail',
+                    tenure: otpTenureInSecs,
+                },
+            });
+
+        }
+        catch (err) {
+            console.error('Send OTP Error:', err.message);
+            return res.status(400).json({
+                status: 'failure',
+                error: err.message,
+            });
+        }
+    }
+    catch (err) {
+        return res.status(500).json({
+            status: "failure",
+            error: err.message
+        })
+    }
+}
+
+
 const exampleProtectedPath = async (req, res) => {
     return res.status(200).json({
         status: "success",
@@ -127,6 +182,7 @@ const exampleAdminPath = async (req, res) => {
 module.exports = {
     signup,
     login,
+    sendOTP,
     exampleProtectedPath,
     exampleAdminPath
 }

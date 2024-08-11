@@ -30,8 +30,6 @@ const Profile = () => {
       (!disablePasswordSection &&
         (password.trim() === "" ||
           confirmPassword.trim() === "" ||
-          !name ||
-          !email ||
           !password ||
           !confirmPassword))
     ) {
