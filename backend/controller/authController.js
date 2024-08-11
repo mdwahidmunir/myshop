@@ -5,6 +5,7 @@ const User = require('../model/userModel')
 const emailHelper = require('../utils/mailer')
 const generateOTP = require('../utils/otpGenerator')
 const { WELCOME_TEMPLATE, OTP_TEMPLATE } = require('../utils/templates')
+const { sanitizeUser } = require('../utils/helpers/_helper')
 
 dotenv.config()
 const { JWT_SECRET } = process.env
@@ -93,7 +94,7 @@ const login = async (req, res) => {
 
                 }
                 catch (err) {
-                    return res.status(502).json({
+                    return res.status(500).json({
                         status: "failure",
                         error: err.message
                     })
@@ -102,7 +103,7 @@ const login = async (req, res) => {
         }
     }
     catch (err) {
-        return res.status(502).json({
+        return res.status(500).json({
             status: "failure",
             error: err.message
         })
@@ -111,50 +112,117 @@ const login = async (req, res) => {
 
 
 const sendOTP = async (req, res) => {
+    const { email } = req.body
     try {
-        const { email } = req.body
-        try {
-            if (!email)
-                throw new Error("Email is empty")
+        if (!email)
+            throw new Error("Email is empty")
 
-            const otpTenureInSecs = 60 * 0.5 // in secs 
-            const user = await User.findOne({ email })
+        const otpTenureInSecs = 60 * 5 // in secs 
+        const user = await User.findOne({ email })
 
-            // Here we are purposely setting status 200 so as to not allow the hackers trial and error of mails.
-            // Though we show mail sent but we will not send the mail as there is no point in sending to unregistered mail
-            if (!user)
-                return res.status(200).json({
-                    status: "success",
-                    response: {
-                        message: "Mail sent to the registered mail",
-                        tenure: otpTenureInSecs
-                    }
-                })
-
-            const username = user.name;
-            const otp = await generateOTP(7);
-            user.otp = otp;
-            user.otpExpiry = new Date(Date.now() + 1000 * otpTenureInSecs);
-            await user.save();
-
-            await emailHelper(OTP_TEMPLATE, email, { username, otp });
-
+        // Here we are purposely setting status 200 so as to not allow the hackers trial and error of mails.
+        // Though we show mail sent but we will not send the mail as there is no point in sending to unregistered mail
+        if (!user)
             return res.status(200).json({
-                status: 'success',
+                status: "success",
                 response: {
-                    message: 'Mail sent to the registered mail',
-                    tenure: otpTenureInSecs,
-                },
-            });
+                    message: "Mail sent to the registered mail",
+                    tenure: otpTenureInSecs
+                }
+            })
 
-        }
-        catch (err) {
-            console.error('Send OTP Error:', err.message);
+        const username = user.name;
+        const otp = await generateOTP(7);
+        user.otp = otp;
+        user.otpExpiry = new Date(Date.now() + 1000 * otpTenureInSecs);
+        await user.save();
+
+        await emailHelper(OTP_TEMPLATE, email, { username, otp });
+
+        return res.status(200).json({
+            status: 'success',
+            response: {
+                message: 'Mail sent to the registered mail',
+                tenure: otpTenureInSecs,
+            },
+        });
+
+    }
+    catch (err) {
+        return res.status(500).json({
+            status: 'failure',
+            error: err.message,
+        });
+    }
+}
+
+
+
+const passwordReset = async (req, res) => {
+    try {
+        const { email, password, confirmPassword, otp } = req.body
+
+        // CASE I : When the fields are empty
+        if (!(email && password && confirmPassword && otp))
             return res.status(400).json({
                 status: 'failure',
-                error: err.message,
+                error: 'Fields cannot be left empty'
+            })
+
+        const user = await User.findOne({ email })
+
+        // CASE II : When the email provided does not match in DB
+        // Purposely setting as OTP validation so that hackers are not aware that the email provided is wrong
+        if (!user)
+            return res.status(400).json({
+                status: 'failure',
+                error: 'OTP validation failed'
+            })
+
+        // CASE III : When the OTP provided with otp's tenure
+        let currentTime = new Date()
+        if (currentTime < user.otpExpiry) {
+
+            // CASE III a : When OTP provide is a wrong OTP
+            if (otp !== user.otp)
+                return res.status(400).json({
+                    status: 'failure',
+                    error: 'OTP validation failed'
+                })
+
+            // CASE III b : When OTP provide is a correct OTP
+            crypto.pbkdf2(password, user.salt, 310000, 32, 'sha256', async (err, hashedPassword) => {
+
+                try {
+                    if (err) throw err
+
+                    //Reseting the OTP and updating the password
+
+                    toUpdate = { password: hashedPassword, confirmPassword, otp: null, otpExpiry: null }
+                    const updatedUser = await User.findByIdAndUpdate(user._id, toUpdate, { new: true }).lean()
+
+                    return res.status(200).json({
+                        status: "success",
+                        response: {
+                            message: "Password Reset successful !",
+                            user: sanitizeUser(updatedUser)
+                        }
+                    })
+                }
+                catch (err) {
+                    return res.status(400).json({
+                        status: "failure",
+                        error: err.message
+                    })
+                }
             });
         }
+        // CASE IV : When the OTP provided is expired
+        else
+            return res.status(400).json({
+                status: 'failure',
+                error: 'OTP expired'
+            })
     }
     catch (err) {
         return res.status(500).json({
@@ -183,6 +251,7 @@ module.exports = {
     signup,
     login,
     sendOTP,
+    passwordReset,
     exampleProtectedPath,
     exampleAdminPath
 }

@@ -151,7 +151,6 @@ const updateUser = async (req, res) => {
                     })
                 }
                 catch (err) {
-                    console.log("Err :", err)
                     return res.status(400).json({
                         status: "failure",
                         error: err.message
@@ -162,7 +161,6 @@ const updateUser = async (req, res) => {
 
     }
     catch (err) {
-        console.log("ERR ::", err)
         return res.status(502).json({
             status: "failure",
             error: err.message

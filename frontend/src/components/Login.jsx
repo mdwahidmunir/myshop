@@ -100,16 +100,7 @@ const Login = () => {
           <Row className="py-3">
             <Col>
               Forget Password ? &nbsp;
-              <Link
-                to={
-                  redirect
-                    ? `/forget-password?redirect=${redirect}`
-                    : "/forget-password"
-                }
-              >
-                Forget Password
-              </Link>{" "}
-              <br />
+              <Link to={"/forget-password"}>Forget Password</Link> <br />
               New User ? &nbsp;
               <Link
                 to={redirect ? `/register?redirect=${redirect}` : "/register"}

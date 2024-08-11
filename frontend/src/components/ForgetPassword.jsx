@@ -5,7 +5,9 @@ import { Button, Form, Row, Col } from "react-bootstrap";
 import {
   decOTPCountDown,
   logout,
-  resetToast,
+  passwordResetAsync,
+  resetMessage,
+  resetOTPToast,
   sendOTPAsync,
   setAuthError,
   setAuthToken,
@@ -14,6 +16,7 @@ import {
   selectAuthToken,
   selectAuthState,
   selectOTPStatus,
+  selectAuthMessage,
 } from "../redux/selectors/authSelector";
 import { resetError } from "../redux/slices/authSlice";
 import FormContainer from "./common/FormContainer";
@@ -38,11 +41,18 @@ const ForgetPassword = () => {
   let authToken = useSelector(selectAuthToken);
   const { error } = useSelector(selectAuthState);
   const otpStatus = useSelector(selectOTPStatus);
+  const message = useSelector(selectAuthMessage);
 
   const redirect = location.search
     ? location.search.split("?redirect=")[1]
     : "/";
 
+  const resetFormFields = () => {
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setOTP("");
+  };
   const areEmptyFieldsPresent = () => {
     if (
       email.trim() === "" ||
@@ -65,7 +75,7 @@ const ForgetPassword = () => {
     return element.length < minLength;
   };
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
 
     // Validators
@@ -82,7 +92,14 @@ const ForgetPassword = () => {
       return;
     }
 
-    // dispatch(sendOTPAsync(email));
+    const response = await dispatch(
+      passwordResetAsync({ email, password, confirmPassword, otp })
+    );
+
+    if (response.type === passwordResetAsync.rejected.toString()) {
+      setOTP("");
+    } else if (response.type === passwordResetAsync.fulfilled.toString())
+      resetFormFields();
   };
 
   const otpHandler = () => {
@@ -128,8 +145,13 @@ const ForgetPassword = () => {
     else if (otpStatus.message)
       toast.success(otpStatus.message, { autoClose: 3000 });
     else if (error) toast.error(error, { autoClose: 3000 });
-    return () => dispatch(resetToast());
+    if (passwordResetAsync.fulfilled) return () => dispatch(resetOTPToast());
   }, [dispatch, otpStatus.sending, otpStatus.message, error]);
+
+  useEffect(() => {
+    if (message) toast.success("Password updated successfully !");
+    return () => dispatch(resetMessage());
+  }, [dispatch, message]);
 
   return (
     <>

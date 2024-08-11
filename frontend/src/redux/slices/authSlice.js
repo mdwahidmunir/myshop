@@ -67,6 +67,23 @@ export const sendOTPAsync = createAsyncThunk(
     }
 )
 
+
+export const passwordResetAsync = createAsyncThunk(
+    'user/passwordReset',
+    async ({ email, password, confirmPassword, otp }, thunkAPI) => {
+        try {
+            const response = await _axios.post('/auth/passwordReset', { email, password, confirmPassword, otp })
+            return response.data.response.message
+        }
+        catch (err) {
+            const responseFromBackEndServer = err.response.data.error || err.message
+            if (responseFromBackEndServer)
+                err.message = responseFromBackEndServer
+            return thunkAPI.rejectWithValue(err)
+        }
+    }
+)
+
 const initialState = {
     error: null,
     loading: false,
@@ -76,7 +93,8 @@ const initialState = {
         sending: false,
         countDown: 0, // countDown in seconds
         message: null,
-    }
+    },
+    message: null
 }
 
 const authSlice = createSlice({
@@ -96,11 +114,14 @@ const authSlice = createSlice({
                 state.otpStatus.countDown -= 1
             }
         },
-        resetToast: (state) => {
+        resetOTPToast: (state) => {
             state.error = null
             state.loading = false
             state.otpStatus.pending = false
             state.otpStatus.message = null
+        },
+        resetMessage: (state) => {
+            state.message = null
         }
     },
     extraReducers: (builder) => {
@@ -150,8 +171,30 @@ const authSlice = createSlice({
                 state.otpStatus.countDown = action.payload.tenure || 60
                 state.otpStatus.message = action.payload.message
             })
+            .addCase(passwordResetAsync.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(passwordResetAsync.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload.message ? action.payload.message : action.payload
+                state.otpStatus.countDown = 0
+            })
+            .addCase(passwordResetAsync.fulfilled, (state, action) => {
+                state.loading = false
+                state.message = action.payload
+                state.otpStatus.countDown = 0
+            })
     }
 })
 
-export const { resetError, resetToast, clearToken, setAuthError, setAuthToken, decOTPCountDown } = authSlice.actions
+export const {
+    resetError,
+    resetOTPToast,
+    resetMessage,
+    resetCountDown,
+    clearToken,
+    setAuthError,
+    setAuthToken,
+    decOTPCountDown
+} = authSlice.actions
 export default authSlice.reducer
