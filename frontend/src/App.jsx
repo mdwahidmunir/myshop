@@ -9,6 +9,7 @@ import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import ProtectedRoutes from "./components/common/ProtectedRoutes";
 import ProfileScreen from "./screens/ProfileScreen";
+import ForgetPasswordScreen from "./screens/ForgetPasswordScreen";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<SignupScreen />} />
+            <Route path="/forget-password" element={<ForgetPasswordScreen />} />
             <Route
               path="/profile"
               element={

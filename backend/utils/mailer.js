@@ -28,15 +28,20 @@ const replaceContent = (content, kwargs) => {
     return content
 }
 
+const mailSubject = {
+    [WELCOME_TEMPLATE]: 'Welcome to MyShop',
+    [OTP_TEMPLATE]: 'Your MyShop OTP for Password Reset'
+}
+
 const emailHelper = async (template, mailRecepient, kwargs) => {
     try {
         const template_path = path.join(__dirname, 'email_templates', template)
         const content = await fs.promises.readFile(template_path, 'utf-8')
-
+        const subject = mailSubject[template]
         const mailOptions = {
             to: mailRecepient,
             from: SENDER_EMAIL,
-            subject: 'Welcome to MyShop',
+            subject,
             html: replaceContent(content, kwargs)
         }
 
@@ -50,4 +55,3 @@ const emailHelper = async (template, mailRecepient, kwargs) => {
 
 module.exports = emailHelper
 
-// emailHelper(WELCOME_TEMPLATE, SENDER_EMAIL, { username: 'Wahid' })
