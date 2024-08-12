@@ -6,7 +6,7 @@ import {
   decOTPCountDown,
   logout,
   passwordResetAsync,
-  resetMessage,
+  resetAuthSuccessMessage,
   resetOTPToast,
   sendOTPAsync,
   setAuthError,
@@ -16,7 +16,7 @@ import {
   selectAuthToken,
   selectAuthState,
   selectOTPStatus,
-  selectAuthMessage,
+  selectAuthSuccessMessage,
 } from "../redux/selectors/authSelector";
 import { resetError } from "../redux/slices/authSlice";
 import FormContainer from "./common/FormContainer";
@@ -41,7 +41,7 @@ const ForgetPassword = () => {
   let authToken = useSelector(selectAuthToken);
   const { error } = useSelector(selectAuthState);
   const otpStatus = useSelector(selectOTPStatus);
-  const message = useSelector(selectAuthMessage);
+  const message = useSelector(selectAuthSuccessMessage);
 
   const redirect = location.search
     ? location.search.split("?redirect=")[1]
@@ -150,7 +150,7 @@ const ForgetPassword = () => {
 
   useEffect(() => {
     if (message) toast.success("Password updated successfully !");
-    return () => dispatch(resetMessage());
+    return () => dispatch(resetAuthSuccessMessage());
   }, [dispatch, message]);
 
   return (

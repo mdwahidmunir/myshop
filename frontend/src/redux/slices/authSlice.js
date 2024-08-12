@@ -48,6 +48,7 @@ export const logout = createAsyncThunk(
     async (_, thunkAPI) => {
         thunkAPI.dispatch(clearToken())
         thunkAPI.dispatch(resetUser())
+        thunkAPI.dispatch(setAuthSuccessMessage("Logout Successful !"))
     }
 )
 
@@ -94,7 +95,8 @@ const initialState = {
         countDown: 0, // countDown in seconds
         message: null,
     },
-    message: null
+    authSuccessMessage: null,
+    infoMessage: null
 }
 
 const authSlice = createSlice({
@@ -117,11 +119,12 @@ const authSlice = createSlice({
         resetOTPToast: (state) => {
             state.error = null
             state.loading = false
-            state.otpStatus.pending = false
+            state.otpStatus.sending = false
             state.otpStatus.message = null
         },
-        resetMessage: (state) => {
-            state.message = null
+        setAuthSuccessMessage: (state, action) => state.authSuccessMessage = action.payload,
+        resetAuthSuccessMessage: (state) => {
+            state.authSuccessMessage = null
         }
     },
     extraReducers: (builder) => {
@@ -181,7 +184,7 @@ const authSlice = createSlice({
             })
             .addCase(passwordResetAsync.fulfilled, (state, action) => {
                 state.loading = false
-                state.message = action.payload
+                state.authSuccessMessage = action.payload
                 state.otpStatus.countDown = 0
             })
     }
@@ -190,11 +193,12 @@ const authSlice = createSlice({
 export const {
     resetError,
     resetOTPToast,
-    resetMessage,
+    resetAuthSuccessMessage,
     resetCountDown,
     clearToken,
     setAuthError,
     setAuthToken,
+    setAuthSuccessMessage,
     decOTPCountDown
 } = authSlice.actions
 export default authSlice.reducer

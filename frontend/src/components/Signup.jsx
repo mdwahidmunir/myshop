@@ -18,6 +18,8 @@ import Message from "./Message";
 import { Link } from "react-router-dom";
 import cookieParser from "../utils/cookieParser";
 import { IoCloseSharp } from "react-icons/io5";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -77,9 +79,9 @@ const Signup = () => {
     dispatch(signup({ name, email, password, confirmPassword }));
   };
 
-  const handleCloseClick = () => {
-    dispatch(resetError());
-  };
+  // const handleCloseClick = () => {
+  //   dispatch(resetError());
+  // };
 
   useEffect(() => {
     if (!cookieParser().jwt) {
@@ -92,23 +94,28 @@ const Signup = () => {
     if (authToken) {
       navigate(redirect);
     }
+  }, [navigate, redirect, authToken, dispatch]);
+
+  useEffect(() => {
+    if (error) toast.error(error, { autoClose: 3000 });
     return () => {
       dispatch(resetError());
     };
-  }, [navigate, redirect, authToken, dispatch]);
+  }, [dispatch, error]);
 
   return (
     <>
+      <ToastContainer />
       <FormContainer>
         <h1>Sign up</h1>
-        {error && (
+        {/* {error && (
           <Message variant="danger">
             {error}{" "}
             <span to="/login" onClick={handleCloseClick}>
               <IoCloseSharp className="fas-danger-close" />
             </span>
           </Message>
-        )}
+        )} */}
 
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="name" className="mb-3">
