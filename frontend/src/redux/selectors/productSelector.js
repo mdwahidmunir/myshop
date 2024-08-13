@@ -3,3 +3,5 @@ export const selectAllProducts = (state) => state.products.products // state.red
 export const selectProductById = (state) => state.products.currentProduct
 
 export const selectProductState = state => state.products
+
+export const selectProductPageInfo = state => state.products.pageInfo
