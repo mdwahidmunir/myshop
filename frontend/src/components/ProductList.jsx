@@ -46,7 +46,16 @@ function ProductList() {
                 </Col>
               ))}
           </Row>
-          <Paginate page={currentPage} totalPages={totalPages} ke />
+          <div className="d-flex justify-content-between align-items-center my-3">
+            <span>
+              Showing {(currentPage - 1) * ITEMS_LIMIT + 1} to{" "}
+              {currentPage === totalPages
+                ? totalItems
+                : ITEMS_LIMIT * currentPage}{" "}
+              of {totalItems} results
+            </span>
+            <Paginate page={currentPage} totalPages={totalPages} />
+          </div>
         </div>
       )}
     </>
