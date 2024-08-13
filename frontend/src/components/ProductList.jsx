@@ -1,21 +1,33 @@
 import { Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAllProducts } from "../redux/selectors/productSelector";
+import {
+  selectAllProducts,
+  selectProductPageInfo,
+} from "../redux/selectors/productSelector";
 import Product from "../components/Product";
 import { useEffect } from "react";
-import { fetchAllProducts } from "../redux/slices/productSlice";
+import { fetchAllProducts, fetchProducts } from "../redux/slices/productSlice";
 import Loader from "../components/Loader";
 import { selectProductState } from "../redux/selectors/productSelector";
 import Message from "../components/Message";
+import Paginate from "./common/Paginate";
+import { useLocation } from "react-router-dom";
+import { ITEMS_LIMIT } from "../utils/constants";
 
 function ProductList() {
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(fetchAllProducts());
-  }, [dispatch]);
+  const location = useLocation();
+  const keywords = location.search;
 
   const products = useSelector(selectAllProducts);
   const { loading, error } = useSelector(selectProductState);
+  const { currentPage, totalItems } = useSelector(selectProductPageInfo);
+
+  const totalPages = Math.ceil(totalItems / ITEMS_LIMIT);
+
+  useEffect(() => {
+    dispatch(fetchProducts(keywords));
+  }, [dispatch, keywords, totalPages]);
 
   return (
     <>
@@ -34,6 +46,7 @@ function ProductList() {
                 </Col>
               ))}
           </Row>
+          <Paginate page={currentPage} totalPages={totalPages} ke />
         </div>
       )}
     </>
