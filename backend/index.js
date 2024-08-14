@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser')
 const productRouter = require('./router/productRouter');
 const userRouter = require('./router/userRouter')
 const authRouter = require('./router/authRouter')
+const shippingRouter = require('./router/shippingRouter')
 const cors = require('cors');
 const helmet = require('helmet')
 const passport = require('passport')
@@ -36,6 +37,7 @@ app.use(passport.initialize())
 app.use('/api/v1/products', productRouter)
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/shipping', shippingRouter)
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {

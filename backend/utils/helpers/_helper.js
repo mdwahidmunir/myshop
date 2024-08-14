@@ -8,4 +8,15 @@ const sanitizeUser = (user) => {
         }, {})
 }
 
-module.exports = { sanitizeUser }
+const sanitizeShippingDetails = (shippingDetails) => {
+    const removeField = ['__v', 'userId', '_id']
+
+    return Object.keys(shippingDetails)
+        .filter(key => !removeField.includes(key))
+        .reduce((sanitizedDetails, filteredKey) => {
+            sanitizedDetails[filteredKey] = shippingDetails[filteredKey]
+            return sanitizedDetails
+        }, {})
+}
+
+module.exports = { sanitizeUser, sanitizeShippingDetails }

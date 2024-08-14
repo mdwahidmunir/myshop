@@ -6,7 +6,7 @@ import {
 } from "../redux/selectors/productSelector";
 import Product from "../components/Product";
 import { useEffect } from "react";
-import { fetchAllProducts, fetchProducts } from "../redux/slices/productSlice";
+import { fetchProducts } from "../redux/slices/productSlice";
 import Loader from "../components/Loader";
 import { selectProductState } from "../redux/selectors/productSelector";
 import Message from "../components/Message";
