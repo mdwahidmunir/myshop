@@ -10,6 +10,7 @@ import SignupScreen from "./screens/SignupScreen";
 import ProtectedRoutes from "./components/common/ProtectedRoutes";
 import ProfileScreen from "./screens/ProfileScreen";
 import ForgetPasswordScreen from "./screens/ForgetPasswordScreen";
+import ShippinScreen from "./screens/ShippinScreen";
 
 function App() {
   return (
@@ -35,6 +36,14 @@ function App() {
               element={
                 <ProtectedRoutes>
                   <ProfileScreen />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path="/shipping"
+              element={
+                <ProtectedRoutes>
+                  <ShippinScreen />
                 </ProtectedRoutes>
               }
             />

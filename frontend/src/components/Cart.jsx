@@ -103,13 +103,15 @@ const Cart = () => {
                 </h3>
               </ListGroup.Item>
               <ListGroup.Item>
-                <Button
-                  type="button"
-                  className="btn-block w-100"
-                  disabled={cartItems.length === 0}
-                >
-                  Proceed To Checkout
-                </Button>
+                <Link to="/shipping">
+                  <Button
+                    type="button"
+                    className="btn-block w-100"
+                    disabled={cartItems.length === 0}
+                  >
+                    Proceed To Checkout
+                  </Button>
+                </Link>
               </ListGroup.Item>
             </ListGroup>
           </Card>
