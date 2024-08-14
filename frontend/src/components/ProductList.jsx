@@ -21,13 +21,15 @@ function ProductList() {
 
   const products = useSelector(selectAllProducts);
   const { loading, error } = useSelector(selectProductState);
-  const { currentPage, totalItems } = useSelector(selectProductPageInfo);
+  const { currentPage, totalItems, totalPage } = useSelector(
+    selectProductPageInfo
+  );
 
   const totalPages = Math.ceil(totalItems / ITEMS_LIMIT);
 
   useEffect(() => {
     dispatch(fetchProducts(keywords));
-  }, [dispatch, keywords, totalPages]);
+  }, [dispatch, keywords]);
 
   return (
     <>
@@ -54,7 +56,7 @@ function ProductList() {
                 : ITEMS_LIMIT * currentPage}{" "}
               of {totalItems} results
             </span>
-            <Paginate page={currentPage} totalPages={totalPages} />
+            <Paginate page={currentPage} totalPages={totalPage} />
           </div>
         </div>
       )}
