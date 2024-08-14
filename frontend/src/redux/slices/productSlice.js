@@ -121,7 +121,7 @@ const productSlice = createSlice({
                 state.pageInfo = {
                     currentPage: action.payload.page,
                     totalItems: action.payload.totalItems,
-                    totalPage: action.payload.page
+                    totalPage: action.payload.totalPage
                 }
             })
     }
