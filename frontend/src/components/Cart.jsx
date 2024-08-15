@@ -21,9 +21,6 @@ const Cart = () => {
   const qty = location.search ? Number(location.search.split("=")[1]) : 1;
   const cartItems = useSelector((state) => state.cart.cartItems);
 
-  console.log("Location ::", location);
-  console.log("cart items", cartItems);
-
   useEffect(() => {
     id && dispatch(addToCart({ id, qty }));
   }, [dispatch, id, qty]);
