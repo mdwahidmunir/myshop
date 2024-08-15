@@ -29,7 +29,7 @@ const signup = async (req, res) => {
                 maxAge: 1000 * 60 * 2,
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
-                sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax', // Adjust based on your needs
+                sameSite: 'None'
             });
 
             const { name, email } = newUser
@@ -95,7 +95,7 @@ const login = async (req, res) => {
                         maxAge: 1000 * 60 * 2,
                         httpOnly: true,
                         secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
-                        sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax', // Adjust based on your needs
+                        sameSite: 'None'
                     });
                     return res.status(200).json({
                         status: "success",
