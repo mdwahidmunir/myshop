@@ -4,12 +4,12 @@ import { Button, Form } from "react-bootstrap";
 import { logout, setAuthError, setAuthToken } from "../redux/slices/authSlice";
 import { selectAuthToken } from "../redux/selectors/authSelector";
 import { resetError, setShippingInfo } from "../redux/slices/shippingSlice";
-import FormContainer from "./common/FormContainer";
+import { selectShippingInfo } from "../redux/selectors/shippingSelector";
+import { getShippingInfo } from "../redux/slices/shippingSlice";
 import cookieParser, { isLoggedIn } from "../utils/cookieParser";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { selectShippingInfo } from "../redux/selectors/shippingSelector";
-import { getShippingInfo } from "../redux/slices/shippingSlice";
+import FormContainer from "./common/FormContainer";
 
 const Shipping = () => {
   const [address, setAddress] = useState("");
@@ -44,6 +44,7 @@ const Shipping = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    e.stopPropagation();
 
     // Validators
     if (areEmptyFieldsPresent()) {
@@ -57,13 +58,14 @@ const Shipping = () => {
   useEffect(() => {
     if (!isLoggedIn()) {
       dispatch(logout());
+      return;
     }
     if (!authToken && isLoggedIn()) {
       const currentToken = cookieParser().jwt;
       dispatch(setAuthToken(currentToken));
     }
 
-    if (authToken) dispatch(getShippingInfo());
+    if (isLoggedIn()) dispatch(getShippingInfo());
   }, [authToken, dispatch]);
 
   useEffect(() => {

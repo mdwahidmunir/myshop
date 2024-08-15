@@ -4,6 +4,7 @@ import { Container } from "react-bootstrap";
 import Cart from "../components/Cart";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
+import CheckoutSteps from "../components/common/CheckoutSteps";
 
 const CartScreen = () => {
   return (
@@ -11,6 +12,7 @@ const CartScreen = () => {
       <Header />
       <main className="py-3">
         <Container>
+          <CheckoutSteps step1 />
           <h3>Shopping Cart</h3>
           <Cart />
         </Container>
