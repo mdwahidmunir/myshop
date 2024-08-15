@@ -45,9 +45,10 @@ app.use('/api/v1/shipping', shippingRouter)
 
 const PORT = process.env.PORT || 8080;
 app.get('/api/v1/serverCheck', (req, res) => {
+    const cookie = req.cookies.jwt || 'NO_COOKIE'
     res.status(200).json({
         status: "success",
-        response: `Frontend origin is ${origin} || backend is running on port ${PORT}`
+        response: `Frontend origin is ${origin} || backend is running on port ${PORT} ccokies : ${cookie}`
     })
 })
 
