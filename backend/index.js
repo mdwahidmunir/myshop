@@ -23,9 +23,13 @@ mongoose.connect(dbURL).then((conn) => {
 
 const app = express();
 
+const origin = `${FRONTEND_URL}` === 'http://localhost' ? `${FRONTEND_URL}:${FRONTEND_PORT}` : `${FRONTEND_URL}`
 const corsOptions = {
-    origin: `${FRONTEND_URL}:${FRONTEND_PORT}`,
+    origin: origin,
     credentials: true,
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
 }
 
 app.use(helmet())
@@ -40,6 +44,13 @@ app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/shipping', shippingRouter)
 
 const PORT = process.env.PORT || 8080;
+app.get('/api/v1/serverCheck', (req, res) => {
+    res.status(200).json({
+        status: "success",
+        response: `Frontend origin is ${origin} || backend is running on port ${PORT}`
+    })
+})
+
 app.listen(PORT, () => {
     console.log(`Server is running on port : ${PORT}`)
 })
