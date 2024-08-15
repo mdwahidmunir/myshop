@@ -25,7 +25,12 @@ const signup = async (req, res) => {
                 salt
             })
             const authToken = jwt.sign({ id: newUser._id }, JWT_SECRET)
-            res.cookie('jwt', authToken, { maxAge: 1000 * 15 })
+            res.cookie('jwt', authToken, {
+                maxAge: 1000 * 60 * 2,
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
+                sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax', // Adjust based on your needs
+            });
 
             const { name, email } = newUser
             const apiResponse = { name, email, authToken }
@@ -86,7 +91,12 @@ const login = async (req, res) => {
 
                     // Password is valid here
                     const authToken = jwt.sign({ id: user._id }, JWT_SECRET)
-                    res.cookie('jwt', authToken, { maxAge: 1000 * 60 * 2 }) // miliSec * sec * min * hr * day
+                    res.cookie('jwt', authToken, {
+                        maxAge: 1000 * 60 * 2,
+                        httpOnly: true,
+                        secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
+                        sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax', // Adjust based on your needs
+                    });
                     return res.status(200).json({
                         status: "success",
                         response: authToken
