@@ -24,7 +24,7 @@ mongoose.connect(dbURL).then((conn) => {
 const app = express();
 
 const corsOptions = {
-    origin: `${FRONTEND_URL}:${FRONTEND_PORT}`,
+    origin: `${FRONTEND_URL}`,
     credentials: true,
 }
 
