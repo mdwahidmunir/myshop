@@ -95,7 +95,7 @@ const login = async (req, res) => {
                         secure: process.env.NODE_ENV === 'production',
                     }
                     if (process.env.NODE_ENV === 'production')
-                        cookieConfig['secure'] = 'None'
+                        cookieConfig['sameSite'] = 'None'
 
                     const authToken = jwt.sign({ id: user._id }, JWT_SECRET)
                     res.cookie('jwt', authToken, {
