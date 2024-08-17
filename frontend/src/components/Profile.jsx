@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import { selectAuthState } from "../redux/selectors/authSelector";
-import { selectUserInfo } from "../redux/selectors/userSelector";
+import {
+  selectUserInfo,
+  selectUserState,
+} from "../redux/selectors/userSelector";
 import { logout, resetError, setAuthError } from "../redux/slices/authSlice";
 import Message from "./Message";
 import { ToastContainer, toast } from "react-toastify";
@@ -20,6 +23,7 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   const { error } = useSelector(selectAuthState);
+  const { loading } = useSelector(selectUserState);
 
   const areEmptyFieldsPresent = () => {
     if (
@@ -48,10 +52,6 @@ const Profile = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    if (!isLoggedIn()) {
-      dispatch(logout());
-      return;
-    }
 
     // Validators
     if (areEmptyFieldsPresent()) {
@@ -168,7 +168,7 @@ const Profile = () => {
             />
           </Form.Group>
 
-          <Button type="submit" variant="primary">
+          <Button type="submit" disabled={loading} variant="primary">
             Update
           </Button>
         </Form>

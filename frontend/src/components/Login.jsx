@@ -14,6 +14,7 @@ import {
 } from "../redux/selectors/authSelector";
 import { resetError } from "../redux/slices/authSlice";
 import FormContainer from "./common/FormContainer";
+import Loader from "./Loader";
 import Message from "./Message";
 import { Link } from "react-router-dom";
 import cookieParser from "../utils/cookieParser";
@@ -29,7 +30,7 @@ const Login = () => {
   const navigate = useNavigate();
   let authToken = useSelector(selectAuthToken);
 
-  const { error } = useSelector(selectAuthState);
+  const { error, loading } = useSelector(selectAuthState);
 
   const redirect = location.search
     ? location.search.split("?redirect=")[1]
@@ -106,7 +107,7 @@ const Login = () => {
             </Col>
           </Row>
 
-          <Button type="submit" variant="primary">
+          <Button type="submit" disabled={loading} variant="primary">
             Log In
           </Button>
         </Form>

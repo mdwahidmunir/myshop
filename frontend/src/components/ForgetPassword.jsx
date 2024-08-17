@@ -39,7 +39,7 @@ const ForgetPassword = () => {
   const navigate = useNavigate();
 
   let authToken = useSelector(selectAuthToken);
-  const { error } = useSelector(selectAuthState);
+  const { error, loading } = useSelector(selectAuthState);
   const otpStatus = useSelector(selectOTPStatus);
   const message = useSelector(selectAuthSuccessMessage);
 
@@ -216,7 +216,7 @@ const ForgetPassword = () => {
             Send OTP
           </Button>
           &nbsp;&nbsp;
-          <Button type="submit" variant="primary">
+          <Button type="submit" disabled={loading} variant="primary">
             Reset Password
           </Button>
         </Form>

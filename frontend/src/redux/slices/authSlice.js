@@ -175,7 +175,7 @@ const authSlice = createSlice({
             })
             .addCase(signup.fulfilled, (state, action) => {
                 state.error = null
-                state.loading = true
+                state.loading = false
                 state.authToken = action.payload
                 state.isLoggedIn = !!action.payload
             })
