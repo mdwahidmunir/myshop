@@ -51,7 +51,6 @@ export const logout = createAsyncThunk(
         try {
 
             await _axios.post('/auth/logout', {}, { withCredentials: true })
-            thunkAPI.dispatch(setAuthSuccessMessage("Logout Successful !"))
         }
         catch (err) {
             const responseFromBackEndServer = err.response.data.error
