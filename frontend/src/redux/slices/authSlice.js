@@ -99,7 +99,7 @@ const initialState = {
     error: null,
     loading: false,
     authToken: localStorage.getItem('jwt') || null,
-    isLoggedIn: false,//cookieParser().jwt ? true : false,
+    isLoggedIn: !!localStorage.getItem('jwt') || false,
     otpStatus: {
         sending: false,
         countDown: 0, // countDown in seconds
