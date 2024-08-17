@@ -32,6 +32,7 @@ export const signup = createAsyncThunk(
     async ({ name, email, password, confirmPassword }, thunkAPI) => {
         try {
             const response = await _axios.post('/auth/signup', { name, email, password, confirmPassword }, { withCredentials: true })
+            localStorage.setItem('jwt', response.data.response.authToken)
             return response.data.response.authToken
         }
         catch (err) {

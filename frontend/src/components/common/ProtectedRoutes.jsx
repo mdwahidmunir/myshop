@@ -22,14 +22,6 @@ const ProtectedRoutes = ({ children }) => {
   let { loading } = useSelector(selectAuthState);
 
   useEffect(() => {
-    // if (!cookieParser().jwt) {
-    //   dispatch(logout());
-    // }
-    // if (!authToken && cookieParser().jwt) {
-    //   const currentToken = cookieParser().jwt;
-    //   dispatch(setAuthToken(currentToken));
-    // }
-
     if (!loading && !authToken) {
       dispatch(logout());
       return;

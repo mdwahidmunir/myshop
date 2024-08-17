@@ -51,11 +51,6 @@ const Login = () => {
   useEffect(() => {
     if (error) toast.error(error, { autoClose: 3000 });
 
-    // if (!authToken) {
-    //   dispatch(logout());
-    //   return;
-    // }
-
     if (authToken) {
       navigate(redirect);
     }

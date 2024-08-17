@@ -84,13 +84,6 @@ const Signup = () => {
   // };
 
   useEffect(() => {
-    if (!cookieParser().jwt) {
-      dispatch(logout());
-    }
-    if (!authToken && cookieParser().jwt) {
-      const currentToken = cookieParser().jwt;
-      dispatch(setAuthToken(currentToken));
-    }
     if (authToken) {
       navigate(redirect);
     }

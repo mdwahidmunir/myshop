@@ -106,7 +106,7 @@ const login = async (req, res) => {
                     const authToken = jwt.sign({ id: user._id }, JWT_SECRET)
                     res.cookie('jwt', authToken, {
                         ...cookieConfig,
-                        maxAge: 1000 * 10 * 1
+                        maxAge: 1000 * 20 * 1
                     });
                     return res.status(200).json({
                         status: "success",
