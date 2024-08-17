@@ -31,7 +31,7 @@ const Signup = () => {
   const navigate = useNavigate();
 
   let authToken = useSelector(selectAuthToken);
-  const { error } = useSelector(selectAuthState);
+  const { error, loading } = useSelector(selectAuthState);
   const redirect = location.search
     ? location.search.split("?redirect=")[1]
     : "/";
@@ -158,7 +158,7 @@ const Signup = () => {
             </Col>
           </Row>
 
-          <Button type="submit" variant="primary">
+          <Button disabled={loading} type="submit" variant="primary">
             Sign Up
           </Button>
         </Form>

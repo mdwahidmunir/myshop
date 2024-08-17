@@ -21,7 +21,7 @@ export const getUserAsync = createAsyncThunk(
 
 
 export const updateUserAsync = createAsyncThunk(
-    'user/getUser',
+    'user/updateUser',
     async (req, thunkAPI) => {
         try {
             const response = await _axios.patch('/users/user', req, { withCredentials: true })
@@ -78,6 +78,15 @@ const userSlice = createSlice({
                     ...initialState,
                     user: { name, email, role }
                 }
+            })
+            .addCase(updateUserAsync.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(updateUserAsync.rejected, (state) => {
+                state.loading = false
+            })
+            .addCase(updateUserAsync.fulfilled, (state) => {
+                state.loading = false
             })
     }
 }
