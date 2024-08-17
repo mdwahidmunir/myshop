@@ -104,6 +104,7 @@ const shippingSlice = createSlice({
   },
 });
 
-export const { resetError, resetSuccessMessage } = shippingSlice.actions;
+export const { resetError, setShippingError, resetSuccessMessage } =
+  shippingSlice.actions;
 
 export default shippingSlice.reducer;

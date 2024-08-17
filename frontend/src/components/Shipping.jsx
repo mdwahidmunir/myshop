@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, Form } from "react-bootstrap";
 import { logout, setAuthError, setAuthToken } from "../redux/slices/authSlice";
 import { selectAuthToken } from "../redux/selectors/authSelector";
-import { resetError, setShippingInfo } from "../redux/slices/shippingSlice";
+import {
+  resetError,
+  setShippingError,
+  setShippingInfo,
+} from "../redux/slices/shippingSlice";
 import { selectShippingInfo } from "../redux/selectors/shippingSelector";
 import { getShippingInfo } from "../redux/slices/shippingSlice";
 import cookieParser, { isLoggedIn } from "../utils/cookieParser";
@@ -48,7 +52,7 @@ const Shipping = () => {
 
     // Validators
     if (areEmptyFieldsPresent()) {
-      dispatch(setAuthError("Fields cant be left empty"));
+      dispatch(setShippingError("Fields cant be left empty !"));
       return;
     }
 
