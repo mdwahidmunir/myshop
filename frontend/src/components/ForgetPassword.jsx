@@ -111,13 +111,6 @@ const ForgetPassword = () => {
   };
 
   useEffect(() => {
-    if (!isLoggedIn()) {
-      dispatch(logout());
-    }
-    if (!authToken && isLoggedIn()) {
-      const currentToken = cookieParser().jwt;
-      dispatch(setAuthToken(currentToken));
-    }
     if (authToken) {
       navigate(redirect);
     }
