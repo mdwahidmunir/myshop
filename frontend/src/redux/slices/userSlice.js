@@ -85,8 +85,9 @@ const userSlice = createSlice({
             .addCase(updateUserAsync.rejected, (state) => {
                 state.loading = false
             })
-            .addCase(updateUserAsync.fulfilled, (state) => {
+            .addCase(updateUserAsync.fulfilled, (state, action) => {
                 state.loading = false
+                state.user = action.payload
             })
     }
 }
