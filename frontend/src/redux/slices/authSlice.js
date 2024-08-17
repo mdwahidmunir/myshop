@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import _axios from "../../utils/axiosHelper";
-import { getUserAsync, resetUser } from "./userSlice";
+import { resetUser } from "./userSlice";
 import cookieParser from "../../utils/cookieParser";
 
 
@@ -10,7 +10,7 @@ export const login = createAsyncThunk(
     async ({ email, password }, thunkAPI) => {
         try {
             const response = await _axios.post('/auth/login', { email, password }, { withCredentials: true })
-            await thunkAPI.dispatch(getUserAsync());
+            localStorage.setItem('jwt', response.data.response)
             return response.data.response
         }
         catch (err) {
@@ -48,7 +48,17 @@ export const logout = createAsyncThunk(
     async (_, thunkAPI) => {
         thunkAPI.dispatch(clearToken())
         thunkAPI.dispatch(resetUser())
-        thunkAPI.dispatch(setAuthSuccessMessage("Logout Successful !"))
+        try {
+
+            await _axios.post('/auth/logout', {}, { withCredentials: true })
+            thunkAPI.dispatch(setAuthSuccessMessage("Logout Successful !"))
+        }
+        catch (err) {
+            const responseFromBackEndServer = err.response.data.error
+            if (responseFromBackEndServer)
+                err.message = responseFromBackEndServer
+            return thunkAPI.rejectWithValue(err)
+        }
     }
 )
 
@@ -88,8 +98,8 @@ export const passwordResetAsync = createAsyncThunk(
 const initialState = {
     error: null,
     loading: false,
-    authToken: cookieParser().jwt || null,
-    isLoggedIn: cookieParser().jwt ? true : false,
+    authToken: localStorage.getItem('jwt') || null,
+    isLoggedIn: false,//cookieParser().jwt ? true : false,
     otpStatus: {
         sending: false,
         countDown: 0, // countDown in seconds
@@ -106,7 +116,7 @@ const authSlice = createSlice({
         setAuthError: (state, action) => { state.error = action.payload },
         resetError: (state) => { state.error = null },
         clearToken: (state) => {
-            document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;"
+            localStorage.removeItem('jwt')
             state.authToken = null
             state.isLoggedIn = false
         },
@@ -122,7 +132,7 @@ const authSlice = createSlice({
             state.otpStatus.sending = false
             state.otpStatus.message = null
         },
-        setAuthSuccessMessage: (state, action) => state.authSuccessMessage = action.payload,
+        setAuthSuccessMessage: (state, action) => { state.authSuccessMessage = action.payload },
         resetAuthSuccessMessage: (state) => {
             state.authSuccessMessage = null
         }
@@ -136,12 +146,23 @@ const authSlice = createSlice({
                 state.loading = false
                 state.error = action.payload.message ? action.payload.message : action.payload
                 state.isLoggedIn = false
+                state.authToken = null
             })
             .addCase(login.fulfilled, (state, action) => {
                 state.loading = false
                 state.error = null
                 state.authToken = action.payload
                 state.isLoggedIn = !!action.payload
+            })
+            .addCase(logout.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(logout.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.payload.message || action.payload
+            })
+            .addCase(logout.fulfilled, (state) => {
+                state.loading = false
             })
             .addCase(signup.pending, (state) => {
                 state.loading = true

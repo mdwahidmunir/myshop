@@ -90,12 +90,17 @@ const login = async (req, res) => {
                     }
 
                     // Password is valid here
+                    const cookieConfig = {
+                        httpOnly: process.env.NODE_ENV === 'production',
+                        secure: process.env.NODE_ENV === 'production',
+                    }
+                    if (process.env.NODE_ENV === 'production')
+                        cookieConfig['secure'] = 'None'
+
                     const authToken = jwt.sign({ id: user._id }, JWT_SECRET)
                     res.cookie('jwt', authToken, {
-                        maxAge: 1000 * 60 * 2,
-                        httpOnly: true,
-                        secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
-                        sameSite: 'None'
+                        ...cookieConfig,
+                        maxAge: 1000 * 60 * 1
                     });
                     return res.status(200).json({
                         status: "success",
@@ -111,6 +116,22 @@ const login = async (req, res) => {
                 }
             });
         }
+    }
+    catch (err) {
+        return res.status(500).json({
+            status: "failure",
+            error: err.message
+        })
+    }
+}
+
+const logout = (req, res) => {
+    try {
+        res.clearCookie('jwt', { path: '/' }); // This clears the cookie
+        return res.status(200).json({
+            status: "success",
+            response: "Logged out successfull"
+        })
     }
     catch (err) {
         return res.status(500).json({
@@ -260,6 +281,7 @@ const exampleAdminPath = async (req, res) => {
 module.exports = {
     signup,
     login,
+    logout,
     sendOTP,
     passwordReset,
     exampleProtectedPath,

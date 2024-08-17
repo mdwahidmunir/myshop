@@ -1,7 +1,10 @@
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { LinkContainer } from "react-router-bootstrap";
-import { selectUserName } from "../redux/selectors/userSelector";
+import {
+  selectUserName,
+  selectUserState,
+} from "../redux/selectors/userSelector";
 import { selectIsLoggedIn } from "../redux/selectors/authSelector";
 import { useEffect } from "react";
 import { getUserAsync } from "../redux/slices/userSlice";
@@ -11,17 +14,19 @@ function Header() {
   const dispatch = useDispatch();
   const userName = useSelector(selectUserName);
   const isAuthenticated = useSelector(selectIsLoggedIn);
+  const { loading: userLoading } = useSelector(selectUserState);
 
   const handleLogout = async (e) => {
     e.preventDefault();
-    await dispatch(logout()).unwrap();
+    dispatch(logout());
   };
 
   useEffect(() => {
-    if (!userName && isAuthenticated) {
+    console.log("User name is ", isAuthenticated);
+    if (!userName && isAuthenticated && !userLoading) {
       dispatch(getUserAsync());
     }
-  }, [isAuthenticated, userName, dispatch]);
+  }, [isAuthenticated, userName, dispatch, userLoading]);
 
   return (
     <header>

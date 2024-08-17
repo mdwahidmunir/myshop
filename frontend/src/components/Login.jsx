@@ -49,25 +49,20 @@ const Login = () => {
   // };
 
   useEffect(() => {
-    if (!cookieParser().jwt) {
-      dispatch(logout());
-    }
-    if (!authToken && cookieParser().jwt) {
-      const currentToken = cookieParser().jwt;
-      dispatch(setAuthToken(currentToken));
-    }
+    if (error) toast.error(error, { autoClose: 3000 });
+
+    // if (!authToken) {
+    //   dispatch(logout());
+    //   return;
+    // }
 
     if (authToken) {
       navigate(redirect);
     }
-  }, [navigate, redirect, authToken, dispatch, location]);
-
-  useEffect(() => {
-    if (error) toast.error(error, { autoClose: 3000 });
     return () => {
       dispatch(resetError());
     };
-  }, [dispatch, error]);
+  }, [dispatch, navigate, error, redirect, authToken]);
 
   return (
     <>

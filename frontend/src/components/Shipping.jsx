@@ -56,16 +56,17 @@ const Shipping = () => {
   };
 
   useEffect(() => {
-    if (!isLoggedIn()) {
-      dispatch(logout());
-      return;
-    }
-    if (!authToken && isLoggedIn()) {
-      const currentToken = cookieParser().jwt;
-      dispatch(setAuthToken(currentToken));
-    }
+    // if (!isLoggedIn()) {
+    //   dispatch(logout());
+    //   return;
+    // }
+    // if (!authToken && isLoggedIn()) {
+    //   const currentToken = cookieParser().jwt;
+    //   dispatch(setAuthToken(currentToken));
+    // }
 
-    if (isLoggedIn()) dispatch(getShippingInfo());
+    //   if (isLoggedIn()) dispatch(getShippingInfo());
+    if (authToken) dispatch(getShippingInfo());
   }, [authToken, dispatch]);
 
   useEffect(() => {
@@ -73,7 +74,7 @@ const Shipping = () => {
     return () => {
       dispatch(resetError());
     };
-  }, [dispatch, error]);
+  }, [dispatch, error, authToken]);
 
   useEffect(() => {
     if (_address && _city && _country && _postalCode) {
