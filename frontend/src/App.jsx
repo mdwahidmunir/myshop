@@ -11,6 +11,7 @@ import ProtectedRoutes from "./components/common/ProtectedRoutes";
 import ProfileScreen from "./screens/ProfileScreen";
 import ForgetPasswordScreen from "./screens/ForgetPasswordScreen";
 import ShippinScreen from "./screens/ShippinScreen";
+import PaymentMethodScreen from "./screens/PaymentMethodScreen";
 
 function App() {
   return (
@@ -44,6 +45,14 @@ function App() {
               element={
                 <ProtectedRoutes>
                   <ShippinScreen />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path="/payment-method"
+              element={
+                <ProtectedRoutes>
+                  <PaymentMethodScreen />
                 </ProtectedRoutes>
               }
             />

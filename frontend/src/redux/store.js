@@ -4,6 +4,7 @@ import cartReducer from './slices/cartSlice'
 import authSlice from "./slices/authSlice";
 import userSlice from "./slices/userSlice";
 import shippingSlice from "./slices/shippingSlice";
+import paymentSlice from "./slices/paymentSlice";
 
 const store = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
         cart: cartReducer,
         auth: authSlice,
         user: userSlice,
-        shipping: shippingSlice
+        shipping: shippingSlice,
+        payment: paymentSlice
     },
     // Add this middleware to resolve the serialization issue happening while incorrect auth in authSlice
     middleware: getDefaultMiddleware =>

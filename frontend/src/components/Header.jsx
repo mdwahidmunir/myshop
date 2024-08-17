@@ -22,7 +22,6 @@ function Header() {
   };
 
   useEffect(() => {
-    console.log("User name is ", isAuthenticated);
     if (!userName && isAuthenticated && !userLoading) {
       dispatch(getUserAsync());
     }

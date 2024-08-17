@@ -36,8 +36,8 @@ const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
 
       <Nav.Item>
         {step3 ? (
-          <LinkContainer to="/payment">
-            <Nav.Link>Payment</Nav.Link>
+          <LinkContainer to="/payment-method">
+            <Nav.Link>Payment Method</Nav.Link>
           </LinkContainer>
         ) : (
           <Nav.Link disabled>Payment</Nav.Link>

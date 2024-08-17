@@ -1,0 +1,1 @@
+export const selectPaymentState = (state) => state.payment
