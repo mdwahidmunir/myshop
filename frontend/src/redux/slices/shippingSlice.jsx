@@ -26,6 +26,7 @@ export const setShippingInfo = createAsyncThunk(
       });
       return response.data.response;
     } catch (err) {
+      thunkAPI.dispatch(logout());
       const responseFromBackEndServer = err.response.data.error || err.message;
       if (responseFromBackEndServer) err.message = responseFromBackEndServer;
       return thunkAPI.rejectWithValue(err);

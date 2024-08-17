@@ -56,16 +56,6 @@ const Shipping = () => {
   };
 
   useEffect(() => {
-    // if (!isLoggedIn()) {
-    //   dispatch(logout());
-    //   return;
-    // }
-    // if (!authToken && isLoggedIn()) {
-    //   const currentToken = cookieParser().jwt;
-    //   dispatch(setAuthToken(currentToken));
-    // }
-
-    //   if (isLoggedIn()) dispatch(getShippingInfo());
     if (authToken) dispatch(getShippingInfo());
   }, [authToken, dispatch]);
 
