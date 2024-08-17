@@ -1,15 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import _axios from "../../utils/axiosHelper";
+import { logout } from "./authSlice";
 
 export const getUserAsync = createAsyncThunk(
     'user/getUser',
-    async (thunkAPI) => {
+    async (_, thunkAPI) => {
         try {
             const response = await _axios.get('/users/user', { withCredentials: true })
             return response.data.response
         }
         catch (err) {
-            const responseFromBackEndServer = err.response.data.error || err.message
+            thunkAPI.dispatch(logout())
+            const responseFromBackEndServer = err.response.data?.error || err.message
             if (responseFromBackEndServer)
                 err.message = responseFromBackEndServer
             return thunkAPI.rejectWithValue(err)
@@ -26,6 +28,7 @@ export const updateUserAsync = createAsyncThunk(
             return response.data.response
         }
         catch (err) {
+            thunkAPI.dispatch(logout());
             const responseFromBackEndServer = err.response.data.error
             if (responseFromBackEndServer)
                 err.message = responseFromBackEndServer
@@ -66,7 +69,7 @@ const userSlice = createSlice({
                 // Case II : You can return a new state object
                 return {
                     ...initialState,
-                    error: action.payload.message ? action.payload.message : action.payload
+                    error: action.payload.message || action.payload
                 };
             })
             .addCase(getUserAsync.fulfilled, (state, action) => {
