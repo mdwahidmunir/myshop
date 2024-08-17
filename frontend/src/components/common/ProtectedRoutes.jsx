@@ -1,5 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectAuthToken } from "../../redux/selectors/authSelector";
+import {
+  selectAuthState,
+  selectAuthToken,
+} from "../../redux/selectors/authSelector";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import cookieParser from "../../utils/cookieParser";
@@ -16,19 +19,26 @@ const ProtectedRoutes = ({ children }) => {
     : "/";
 
   let authToken = useSelector(selectAuthToken);
+  let { loading } = useSelector(selectAuthState);
 
   useEffect(() => {
-    if (!cookieParser().jwt) {
+    // if (!cookieParser().jwt) {
+    //   dispatch(logout());
+    // }
+    // if (!authToken && cookieParser().jwt) {
+    //   const currentToken = cookieParser().jwt;
+    //   dispatch(setAuthToken(currentToken));
+    // }
+
+    if (!loading && !authToken) {
       dispatch(logout());
+      return;
     }
-    if (!authToken && cookieParser().jwt) {
-      const currentToken = cookieParser().jwt;
-      dispatch(setAuthToken(currentToken));
-    }
+
     if (!authToken) {
       navigate(`/login?redirect=${redirect}`);
     }
-  }, [navigate, authToken, dispatch, redirect]);
+  }, [dispatch, navigate, authToken, redirect, loading]);
 
   return <>{authToken ? children : <LoginScreen />}</>;
 };

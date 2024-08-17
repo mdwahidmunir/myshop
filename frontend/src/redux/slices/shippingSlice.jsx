@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import _axios from "../../utils/axiosHelper";
+import { logout } from "./authSlice";
 
 export const getShippingInfo = createAsyncThunk(
   "shipping/getShippingInfo",
@@ -8,6 +9,7 @@ export const getShippingInfo = createAsyncThunk(
       const response = await _axios.get("/shipping", { withCredentials: true });
       return response.data.response;
     } catch (err) {
+      thunkAPI.dispatch(logout());
       const responseFromBackEndServer = err.response.data.error || err.message;
       if (responseFromBackEndServer) err.message = responseFromBackEndServer;
       return thunkAPI.rejectWithValue(err);
