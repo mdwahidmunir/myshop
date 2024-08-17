@@ -14,6 +14,7 @@ import cookieParser, { isLoggedIn } from "../utils/cookieParser";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormContainer from "./common/FormContainer";
+import { useNavigate } from "react-router-dom";
 
 const Shipping = () => {
   const [address, setAddress] = useState("");
@@ -21,6 +22,7 @@ const Shipping = () => {
   const [postalCode, setPostalCode] = useState("");
   const [country, setCountry] = useState("");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   let authToken = useSelector(selectAuthToken);
   const {
@@ -57,6 +59,7 @@ const Shipping = () => {
     }
 
     dispatch(setShippingInfo({ address, city, country, postalCode }));
+    navigate("/payment-method");
   };
 
   useEffect(() => {
