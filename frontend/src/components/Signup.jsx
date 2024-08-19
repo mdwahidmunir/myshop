@@ -87,7 +87,7 @@ const Signup = () => {
     if (authToken) {
       navigate(redirect);
     }
-  }, [navigate, redirect, authToken, dispatch]);
+  }, [navigate, redirect, authToken]);
 
   useEffect(() => {
     if (error) toast.error(error, { autoClose: 3000 });

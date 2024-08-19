@@ -12,6 +12,7 @@ import ProfileScreen from "./screens/ProfileScreen";
 import ForgetPasswordScreen from "./screens/ForgetPasswordScreen";
 import ShippinScreen from "./screens/ShippinScreen";
 import PaymentMethodScreen from "./screens/PaymentMethodScreen";
+import PlaceOrderScreen from "./screens/PlaceOrderScreen";
 
 function App() {
   return (
@@ -53,6 +54,14 @@ function App() {
               element={
                 <ProtectedRoutes>
                   <PaymentMethodScreen />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path="/place-order"
+              element={
+                <ProtectedRoutes>
+                  <PlaceOrderScreen />
                 </ProtectedRoutes>
               }
             />
