@@ -30,7 +30,7 @@ const signup = async (req, res) => {
                 secure: process.env.NODE_ENV === 'production',
             }
             if (process.env.NODE_ENV === 'production')
-                cookieConfig['sameSite'] = 'Lax'
+                cookieConfig['sameSite'] = 'None'
 
             const authToken = jwt.sign({ id: newUser._id }, JWT_SECRET)
             res.cookie('jwt', authToken, {
@@ -101,7 +101,7 @@ const login = async (req, res) => {
                         secure: process.env.NODE_ENV === 'production',
                     }
                     if (process.env.NODE_ENV === 'production')
-                        cookieConfig['sameSite'] = 'Lax'
+                        cookieConfig['sameSite'] = 'None'
 
                     const authToken = jwt.sign({ id: user._id }, JWT_SECRET)
                     res.cookie('jwt', authToken, {
