@@ -19,18 +19,12 @@ const ProtectedRoutes = ({ children }) => {
     : "/";
 
   let authToken = useSelector(selectAuthToken);
-  let { loading } = useSelector(selectAuthState);
 
   useEffect(() => {
-    if (!loading && !authToken) {
-      dispatch(logout());
-      return;
-    }
-
     if (!authToken) {
       navigate(`/login?redirect=${redirect}`);
     }
-  }, [dispatch, navigate, authToken, redirect, loading]);
+  }, [navigate, authToken, redirect]);
 
   return <>{authToken ? children : <LoginScreen />}</>;
 };

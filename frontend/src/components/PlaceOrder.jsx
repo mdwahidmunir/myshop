@@ -5,9 +5,13 @@ import Message from "../components/Message";
 import CheckoutSteps from "./common/CheckoutSteps";
 import { selectShippingInfo } from "../redux/selectors/shippingSelector";
 import { selectPaymentState } from "../redux/selectors/paymentSlice";
-import { selectCartItems } from "../redux/selectors/cartSelector";
+import {
+  selectCartItems,
+  selectCartState,
+} from "../redux/selectors/cartSelector";
 import { useEffect } from "react";
 import { selectAuthToken } from "../redux/selectors/authSelector";
+import { SHIPPING_CHARGE, TAX } from "../utils/constants";
 
 function PlaceOrder() {
   const {
@@ -22,6 +26,8 @@ function PlaceOrder() {
   const { paymentMethod } = useSelector(selectPaymentState);
 
   const cartItems = useSelector(selectCartItems);
+  const { totalItemsPrice, taxAmt, totalPayableAmt } =
+    useSelector(selectCartState);
 
   let authToken = useSelector(selectAuthToken);
 
@@ -99,32 +105,28 @@ function PlaceOrder() {
               <ListGroup.Item>
                 <Row>
                   <Col>Items:</Col>
-                  {/* <Col>${cart.itemsPrice}</Col> */}
-                  <Col>$0</Col>
+                  <Col>${totalItemsPrice}</Col>
                 </Row>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
                   <Col>Shipping:</Col>
-                  {/* <Col>${cart.shippingPrice}</Col> */}
-                  <Col>$0</Col>
+                  <Col>${SHIPPING_CHARGE}</Col>
                 </Row>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
                   <Col>Tax:</Col>
-                  {/* <Col>${cart.taxPrice}</Col> */}
-                  <Col>$0</Col>
+                  <Col>${taxAmt}</Col>
                 </Row>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
                   <Col>Total:</Col>
-                  {/* <Col>${cart.totalPrice}</Col> */}
-                  <Col>$0</Col>
+                  <Col>${totalPayableAmt}</Col>
                 </Row>
               </ListGroup.Item>
 

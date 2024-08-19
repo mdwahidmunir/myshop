@@ -58,13 +58,20 @@ const Shipping = () => {
       return;
     }
 
-    dispatch(setShippingInfo({ address, city, country, postalCode }));
+    // Set the addresses in Backend only if they are different than inital state
+    if (
+      _address !== address ||
+      _city !== city ||
+      _postalCode !== postalCode ||
+      _country !== country
+    )
+      dispatch(setShippingInfo({ address, city, country, postalCode }));
     navigate("/payment-method");
   };
 
   useEffect(() => {
-    if (authToken) dispatch(getShippingInfo());
-  }, [authToken, dispatch]);
+    if (authToken && !_address) dispatch(getShippingInfo());
+  }, [authToken, dispatch, _address]);
 
   useEffect(() => {
     if (error) toast.error(error, { autoClose: 3000 });
