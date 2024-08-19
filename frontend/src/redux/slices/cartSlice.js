@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import _axios from "../../utils/axiosHelper";
+import { SHIPPING_CHARGE, TAX } from "../../utils/constants";
 
 export const addToCart = createAsyncThunk(
     'cart/addToCart',
@@ -17,17 +18,36 @@ export const addToCart = createAsyncThunk(
 
 const cartItemFromStorage = JSON.parse(localStorage.getItem('cart')) || []
 const initialCartItems = cartItemFromStorage.length !== 0 ? cartItemFromStorage : []
+const totalItems = initialCartItems ? initialCartItems.reduce((acc, item) => acc + item.qty, 0) : 0
+const totalItemsPrice = initialCartItems ? +(initialCartItems
+    .reduce((acc, item) => acc + item.qty * item.price, 0)
+    .toFixed(2)) : 0
+const taxAmt = +(TAX * totalItemsPrice).toFixed(2)
+const totalPayableAmt = totalItemsPrice + taxAmt + SHIPPING_CHARGE
+
+
+const initialState = {
+    cartItems: initialCartItems,
+    loading: true,
+    error: null,
+    totalItemsPrice,
+    totalItems,
+    taxAmt,
+    totalPayableAmt
+}
 
 const cartSlice = createSlice({
     name: 'cart',
-    initialState: {
-        cartItems: initialCartItems,
-        loading: true,
-        error: null
-    },
+    initialState,
     reducers: {
         removeFromCart: (state, action) => {
             state.cartItems = state.cartItems.filter(item => item._id !== action.payload)
+            state.totalItems = state.cartItems.reduce((acc, item) => acc + item.qty, 0)
+            state.totalItemsPrice = +(state.cartItems
+                .reduce((acc, item) => acc + item.qty * item.price, 0)
+                .toFixed(2))
+            state.taxAmt = +(TAX * state.totalItemsPrice).toFixed(2)
+            state.totalPayableAmt = state.totalItemsPrice + state.taxAmt + SHIPPING_CHARGE
             localStorage.setItem('cart', JSON.stringify(state.cartItems))
         }
     },
@@ -53,6 +73,13 @@ const cartSlice = createSlice({
                 else {
                     state.cartItems.push(currentItem)
                 }
+                state.totalItems = state.cartItems.reduce((acc, item) => acc + item.qty, 0)
+                state.totalItemsPrice = +(state.cartItems
+                    .reduce((acc, item) => acc + item.qty * item.price, 0)
+                    .toFixed(2))
+                state.taxAmt = +(TAX * state.totalItemsPrice).toFixed(2)
+                state.totalPayableAmt = state.totalItemsPrice + state.taxAmt + SHIPPING_CHARGE
+
                 state.cartItems.length !== 0 && localStorage.setItem('cart', JSON.stringify(state.cartItems))
             })
     }
