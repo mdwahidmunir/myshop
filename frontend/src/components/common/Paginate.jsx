@@ -1,5 +1,5 @@
 import Pagination from "react-bootstrap/Pagination";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ITEMS_LIMIT } from "../../utils/constants";
 
 let active = 2;
@@ -13,8 +13,16 @@ for (let number = 1; number <= 5; number++) {
 }
 const Paginate = ({ page, totalPages }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const sort = searchParams.get("sort");
+
   const handleClick = (page) => {
-    navigate(`/?page=${page}&limit=${ITEMS_LIMIT}`);
+    if (sort) {
+      navigate(`/?page=${page}&limit=${ITEMS_LIMIT}&sort=${sort}`);
+    } else {
+      navigate(`/?page=${page}&limit=${ITEMS_LIMIT}`);
+    }
   };
   return (
     <>
