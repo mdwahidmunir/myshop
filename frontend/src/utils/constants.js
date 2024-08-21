@@ -3,7 +3,7 @@ export const SHIPPING_CHARGE = 50
 export const TAX = 0.05 // 5% Tax
 
 export const SORT_DROPDOWN = {
-    default: 'Sort from below',
+    default: 'Sort by',
     price_asc: 'Price : Low to High',
     price_desc: 'Price : High to Low',
     rating_desc: 'Ratings: High to Low',

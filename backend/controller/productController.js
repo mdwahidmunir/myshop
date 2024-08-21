@@ -59,25 +59,37 @@ const getProducts = async (req, res) => {
         const page = parseInt(req.query.page) || PAGE
         const limit = parseInt(req.query.limit) || PAGE_LIMIT
         const sort = req.query.sort || null
+        const brand = req.query.brand || null;
+        const category = req.query.category || null;
+
+        const skip = (page - 1) * limit
+
+        let query = {}
+        if (brand) {
+            query.brand = brand;
+        }
+
+        if (category) {
+            query.category = category;
+        }
 
         let products
-        const skip = (page - 1) * limit
 
         if (sort) {
             const sortParam = sort.split('_')[0]
             const sortValue = sort.split('_')[1]
             const sortOrder = sortValue === 'asc' ? 1 : -1
 
-            products = await Product.find({})
+            products = await Product.find(query)
                 .sort({ [sortParam]: sortOrder })
                 .skip(skip)
                 .limit(limit)
                 .lean();
         }
         else
-            products = await Product.find({}).skip(skip).limit(limit).lean()
+            products = await Product.find(query).skip(skip).limit(limit).lean()
 
-        const totalItems = await Product.countDocuments()
+        const totalItems = await Product.countDocuments(query)
         const totalPage = Math.ceil(totalItems / limit)
 
         return res.status(200).json({
