@@ -4,9 +4,13 @@ import Rating from "./Rating";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { clearProduct, fetchProductById } from "../redux/slices/productSlice";
-import { selectProductById } from "../redux/selectors/productSelector";
+import {
+  selectProductById,
+  selectProductState,
+} from "../redux/selectors/productSelector";
 import { useDispatch, useSelector } from "react-redux";
 import LazyImage from "./common/LazyImage";
+import ProductDetailPlaceholder from "./ProductDetailPlaceholder";
 
 function ProductDetail() {
   const { id } = useParams();
@@ -20,6 +24,7 @@ function ProductDetail() {
     return () => dispatch(clearProduct());
   }, [dispatch, id]);
 
+  const { loading } = useSelector(selectProductState);
   const product = useSelector(selectProductById);
 
   const handleAddToCart = (id, qty) => {
@@ -29,6 +34,7 @@ function ProductDetail() {
 
   return (
     <>
+      {loading && <ProductDetailPlaceholder />}
       {product && (
         <div>
           <Row>

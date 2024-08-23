@@ -14,6 +14,12 @@ import {
 } from "../redux/selectors/productSelector";
 import { ITEMS_LIMIT, SORT_DROPDOWN } from "../utils/constants";
 import { getFiltersAsync } from "../redux/slices/filterSlice";
+import ProductPlaceholder from "./ProductPlaceholder";
+import ProductListPLaceholder from "./ProductListPLaceholder";
+import {
+  selectBrands,
+  selectCategories,
+} from "../redux/selectors/filtersSelector";
 
 function ProductList() {
   const dispatch = useDispatch();
@@ -22,8 +28,8 @@ function ProductList() {
   const searchParams = new URLSearchParams(location.search);
   const [queryParams, setQueryParams] = useState({});
   const [sortParam, setSortParam] = useState(queryParams.sort || "default");
-  const brands = useSelector((state) => state.filters.brands);
-  const categories = useSelector((state) => state.filters.categories);
+  const brands = useSelector(selectBrands);
+  const categories = useSelector(selectCategories);
 
   const products = useSelector(selectAllProducts);
   const { loading, error } = useSelector(selectProductState);
@@ -79,7 +85,10 @@ function ProductList() {
   return (
     <>
       {loading ? (
-        <Loader />
+        <>
+          {/* <Loader /> */}
+          <ProductListPLaceholder />
+        </>
       ) : error ? (
         <Message variant="danger">{error}</Message>
       ) : (
