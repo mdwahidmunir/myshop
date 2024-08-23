@@ -105,16 +105,43 @@ const getProducts = async (req, res) => {
         return res.status(500).json({
             status: "failure",
             error: err.message
-
         })
     }
+}
 
 
+const getProductFilters = async (req, res) => {
+    try {
+        let brands = await Product.distinct('brand').lean()
+        let categories = await Product.distinct('category').lean()
+
+        brands = brands.reduce((acc, brand) => {
+            acc[brand] = brand
+            return acc
+        }, {})
+
+        categories = categories.reduce((acc, category) => {
+            acc[category] = category
+            return acc
+        }, {})
+
+        return res.status(200).json({
+            status: "success",
+            response: { brands, categories }
+        })
+    }
+    catch (err) {
+        return res.status(500).json({
+            status: "failure",
+            error: err.message
+        })
+    }
 }
 
 module.exports = {
     getAllProducts,
     createProduct,
     getProductById,
-    getProducts
+    getProducts,
+    getProductFilters
 }

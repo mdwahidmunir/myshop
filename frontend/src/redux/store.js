@@ -5,6 +5,7 @@ import authSlice from "./slices/authSlice";
 import userSlice from "./slices/userSlice";
 import shippingSlice from "./slices/shippingSlice";
 import paymentSlice from "./slices/paymentSlice";
+import filterSlice from "./slices/filterSlice";
 
 const store = configureStore({
     reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
         auth: authSlice,
         user: userSlice,
         shipping: shippingSlice,
-        payment: paymentSlice
+        payment: paymentSlice,
+        filters: filterSlice
     },
     // Add this middleware to resolve the serialization issue happening while incorrect auth in authSlice
     middleware: getDefaultMiddleware =>

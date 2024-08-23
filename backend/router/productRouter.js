@@ -1,7 +1,10 @@
-const { getAllProducts, createProduct, getProductById, getProducts } = require('../controller/productController')
+const { getAllProducts, createProduct, getProductById, getProducts, getProductFilters } = require('../controller/productController')
 const express = require('express');
 
 const productRouter = express.Router();
+
+productRouter
+    .get('/filters', getProductFilters)
 
 productRouter
     .get('/', getProducts)
