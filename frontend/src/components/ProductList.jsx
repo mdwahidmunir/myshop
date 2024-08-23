@@ -13,24 +13,7 @@ import {
   selectProductState,
 } from "../redux/selectors/productSelector";
 import { ITEMS_LIMIT, SORT_DROPDOWN } from "../utils/constants";
-
-// Dummy constants for brands and categories
-const BRAND_FILTER = {
-  default: "Select Brand",
-  Apple: "Apple",
-  Nikon: "Nikon",
-  Google: "Google",
-  Logitech: "Logitech",
-};
-
-const CATEGORY_FILTER = {
-  default: "Select Category",
-  Electronics: "Electronics",
-  SmartPhones: "SmartPhones",
-  Headphones: "Headphones",
-  Gaming: "Gaming",
-  Cameras: "Cameras",
-};
+import { getFiltersAsync } from "../redux/slices/filterSlice";
 
 function ProductList() {
   const dispatch = useDispatch();
@@ -39,6 +22,8 @@ function ProductList() {
   const searchParams = new URLSearchParams(location.search);
   const [queryParams, setQueryParams] = useState({});
   const [sortParam, setSortParam] = useState(queryParams.sort || "default");
+  const brands = useSelector((state) => state.filters.brands);
+  const categories = useSelector((state) => state.filters.categories);
 
   const products = useSelector(selectAllProducts);
   const { loading, error } = useSelector(selectProductState);
@@ -87,6 +72,7 @@ function ProductList() {
       ? setSortParam("default")
       : setSortParam(queryParams.sort);
 
+    dispatch(getFiltersAsync());
     dispatch(fetchProducts(location.search));
   }, [dispatch, location.search, queryParams.sort]);
 
@@ -105,9 +91,9 @@ function ProductList() {
                 onChange={(e) => handleFilter("brand", e.target.value)}
                 value={queryParams.brand || "default"}
               >
-                {Object.keys(BRAND_FILTER).map((key) => (
+                {Object.keys(brands).map((key) => (
                   <option key={key} value={key}>
-                    {BRAND_FILTER[key]}
+                    {brands[key]}
                   </option>
                 ))}
               </Form.Select>
@@ -117,9 +103,9 @@ function ProductList() {
                 onChange={(e) => handleFilter("category", e.target.value)}
                 value={queryParams.category || "default"}
               >
-                {Object.keys(CATEGORY_FILTER).map((key) => (
+                {Object.keys(categories).map((key) => (
                   <option key={key} value={key}>
-                    {CATEGORY_FILTER[key]}
+                    {categories[key]}
                   </option>
                 ))}
               </Form.Select>
