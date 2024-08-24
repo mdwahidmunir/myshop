@@ -43,8 +43,8 @@ function ProductList() {
     let keyword;
     if (_sortParam !== "default") {
       searchParams.set("sort", _sortParam);
-      !queryParams.page && searchParams.set("page", 1);
-      !queryParams.limit && searchParams.set("limit", ITEMS_LIMIT);
+      searchParams.set("page", 1);
+      searchParams.set("limit", ITEMS_LIMIT);
       keyword = `/?${searchParams.toString()}`;
     } else keyword = `/?page=1&limit=${ITEMS_LIMIT}`;
     navigate(keyword);
@@ -54,8 +54,8 @@ function ProductList() {
     let keyword;
     if (value !== "default") {
       searchParams.set(type, value);
-      !queryParams.page && searchParams.set("page", 1);
-      !queryParams.limit && searchParams.set("limit", ITEMS_LIMIT);
+      searchParams.set("page", 1);
+      searchParams.set("limit", ITEMS_LIMIT);
       keyword = `/?${searchParams.toString()}`;
     } else {
       searchParams.delete(type);
