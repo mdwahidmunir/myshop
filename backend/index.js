@@ -7,6 +7,7 @@ const productRouter = require('./router/productRouter');
 const userRouter = require('./router/userRouter')
 const authRouter = require('./router/authRouter')
 const shippingRouter = require('./router/shippingRouter')
+const ordersRouter = require('./router/ordersRouter')
 const cors = require('cors');
 const helmet = require('helmet')
 const passport = require('passport')
@@ -42,6 +43,7 @@ app.use('/api/v1/products', productRouter)
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/auth', authRouter)
 app.use('/api/v1/shipping', shippingRouter)
+app.use('/api/v1/orders', ordersRouter)
 
 const PORT = process.env.PORT || 8080;
 app.get('/api/v1/serverCheck', (req, res) => {
