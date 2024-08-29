@@ -38,16 +38,12 @@ const Orders = () => {
           {orders.map((order) => (
             <Card key={order._id} className="mb-4 shadow-sm">
               <Card.Header className="bg-dark text-white py-3">
-                <Row>
-                  <Col md={6}>
-                    <h5 className="mb-0">Order ID: {order.orderId}</h5>
+                <Row className="d-flex flex-column flex-md-row justify-content-between">
+                  <Col xs={12} md={6} className="d-flex justify-content-start">
+                    <h5 className="m-1">Order ID: {order.orderId}</h5>
                   </Col>
-                  <Col
-                    md={6}
-                    className="text-md-right"
-                    style={{ textAlign: "right" }}
-                  >
-                    <h5 className="mb-0">
+                  <Col xs={12} md={6} className="d-flex justify-content-md-end">
+                    <h5 className="m-1">
                       Date: {new Date(order.createdAt).toLocaleDateString()}
                     </h5>
                   </Col>
