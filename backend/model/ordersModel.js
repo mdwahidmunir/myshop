@@ -1,6 +1,11 @@
 const mongoose = require('mongoose')
 
 const ordersSchema = mongoose.Schema({
+    orderId: {
+        type: String,
+        required: true,
+        unique: true
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -57,6 +62,19 @@ const ordersSchema = mongoose.Schema({
         type: Date,
     },
 }, { timestamps: true, })
+
+
+ordersSchema.pre('validate', async function (next) {
+    if (!this.isNew) return next();
+
+    const lastOrder = await Orders.findOne().sort({ createdAt: -1 });
+
+    const orderIdNumber = lastOrder ? parseInt(lastOrder.orderId.split('#')[1], 10) + 1 : 1;
+
+    this.orderId = `Order#${String(orderIdNumber).padStart(5, '0')}`;
+
+    next();
+});
 
 const Orders = mongoose.model('OrdersModel', ordersSchema)
 

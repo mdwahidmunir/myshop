@@ -2,7 +2,6 @@ import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Message from "../components/Message";
-import CheckoutSteps from "./common/CheckoutSteps";
 import { selectShippingInfo } from "../redux/selectors/shippingSelector";
 import { selectPaymentState } from "../redux/selectors/paymentSlice";
 import {
@@ -11,16 +10,11 @@ import {
 } from "../redux/selectors/cartSelector";
 import { useEffect } from "react";
 import { selectAuthToken } from "../redux/selectors/authSelector";
-import { SHIPPING_CHARGE, TAX } from "../utils/constants";
+import { SHIPPING_CHARGE } from "../utils/constants";
 
 function PlaceOrder() {
-  const {
-    error: shippingError,
-    address,
-    city,
-    postalCode,
-    country,
-  } = useSelector(selectShippingInfo);
+  const { address, city, postalCode, country } =
+    useSelector(selectShippingInfo);
   const navigate = useNavigate();
 
   const { paymentMethod } = useSelector(selectPaymentState);
@@ -30,6 +24,11 @@ function PlaceOrder() {
     useSelector(selectCartState);
 
   let authToken = useSelector(selectAuthToken);
+
+  const placeOrder = () => {
+    // e.preventDefault();
+    navigate("/orders");
+  };
 
   useEffect(() => {
     if (authToken && !address) navigate("/shipping");
@@ -66,7 +65,7 @@ function PlaceOrder() {
                 <Message variant="info">Your cart is empty</Message>
               ) : (
                 <ListGroup variant="flush">
-                  {cartItems.map((item, index) => (
+                  {cartItems.map((item) => (
                     <ListGroup.Item key={item._id}>
                       <Row>
                         <Col md={1}>
@@ -139,7 +138,7 @@ function PlaceOrder() {
                   type="button"
                   className="btn-block w-100"
                   disabled={cartItems.length === 0}
-                  //   onClick={placeOrder}
+                  onClick={placeOrder}
                 >
                   Place Order
                 </Button>
