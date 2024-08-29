@@ -1,6 +1,6 @@
 import { Button, Col, Form } from "react-bootstrap";
 import FormContainer from "./common/FormContainer";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setPaymentMethod } from "../redux/slices/paymentSlice";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 const PaymentMethod = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [paymentMode, setPaymentMode] = useState("online");
+  const [paymentMode, setPaymentMode] = useState("cash");
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -33,6 +33,7 @@ const PaymentMethod = () => {
                 value="online"
                 checked={paymentMode === "online"}
                 onChange={(e) => setPaymentMode(e.target.value)}
+                disabled
               />
               <Form.Check
                 type="radio"

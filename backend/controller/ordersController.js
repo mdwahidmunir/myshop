@@ -75,7 +75,12 @@ const getOrders = async (req, res) => {
 
         const { id } = jwt.verify(token, JWT_SECRET)
 
-        const orders = await Orders.find({ user: id }).populate('orderItems.product', '-_id').sort({ createdAt: -1 }).lean()
+        const orders = await Orders
+            .find({ user: id })
+            .populate('orderItems.product', '-_id')
+            .populate('user', 'name email -_id')
+            .sort({ createdAt: -1 })
+            .lean()
 
         return res.status(200).json({
             status: "success",

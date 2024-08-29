@@ -13,6 +13,7 @@ import ForgetPasswordScreen from "./screens/ForgetPasswordScreen";
 import ShippinScreen from "./screens/ShippinScreen";
 import PaymentMethodScreen from "./screens/PaymentMethodScreen";
 import PlaceOrderScreen from "./screens/PlaceOrderScreen";
+import OrdersScreen from "./screens/OrdersScreen";
 
 function App() {
   return (
@@ -62,6 +63,14 @@ function App() {
               element={
                 <ProtectedRoutes>
                   <PlaceOrderScreen />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoutes>
+                  <OrdersScreen />
                 </ProtectedRoutes>
               }
             />
