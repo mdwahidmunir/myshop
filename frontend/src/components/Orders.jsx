@@ -13,7 +13,6 @@ import OrdersPlaceholder from "./OrdersPlaceholder";
 
 const Orders = () => {
   const dispatch = useDispatch();
-
   const orders = useSelector(selectOrdersState);
   const loading = useSelector(selectOrdersLoading);
   const error = useSelector(selectOrdersError);
@@ -54,95 +53,68 @@ const Orders = () => {
               </Row>
             </Card.Header>
             <Card.Body>
-              <Row className="mb-4">
-                <Col md={4}>
-                  <h6 className="text-muted">Customer Information</h6>
-                  <p className="mb-2">
-                    <strong>Name:</strong>
-                    <br />
-                    {order.user.name}
-                  </p>
-                  <p>
-                    <strong>Email:</strong>
-                    <br />
-                    {order.user.email}
-                  </p>
+              <Row>
+                {/* Column for Order Items */}
+                <Col md={8}>
+                  <h6 className="text-muted mb-3">Order Items</h6>
+                  <ListGroup variant="flush">
+                    {order.orderItems.map((item) => (
+                      <ListGroup.Item key={item._id}>
+                        <Row className="align-items-center mb-2">
+                          <Col md={2} className="mb-2">
+                            <Image
+                              src={item.product.image}
+                              alt={item.product.name}
+                              fluid
+                              rounded
+                            />
+                          </Col>
+                          <Col md={5} className="mb-2">
+                            <h6 className="mb-0">{item.product.name}</h6>
+                          </Col>
+                          <Col md={1} className="mb-2">
+                            <strong>Qty:</strong> {item.qty}
+                          </Col>
+                          <Col md={2} className="mb-2">
+                            <strong>Price:</strong> $
+                            {(item.qty * item.product.price).toFixed(2)}
+                          </Col>
+                        </Row>
+                      </ListGroup.Item>
+                    ))}
+                  </ListGroup>
                 </Col>
-                <Col md={4}>
-                  <h6 className="text-muted">Shipping Address</h6>
-                  <p className="mb-2">
-                    <strong>Address:</strong>
-                    <br />
-                    {order.shippingAddress.address}
-                  </p>
-                  <p className="mb-2">
-                    <strong>City:</strong>
-                    <br />
-                    {order.shippingAddress.city}
-                  </p>
-                  <p className="mb-2">
-                    <strong>Postal Code:</strong>
-                    <br />
-                    {order.shippingAddress.postalCode}
-                  </p>
-                  <p>
-                    <strong>Country:</strong>
-                    <br />
-                    {order.shippingAddress.country}
-                  </p>
-                </Col>
-                <Col md={4}>
-                  <h6 className="text-muted">Payment Details</h6>
-                  <p className="mb-2">
-                    <strong>Method:</strong>
-                    <br />
-                    {order.paymentMethod}
-                  </p>
-                  <p className="mb-2">
-                    <strong>Status:</strong>
-                    <br />
-                    {order.isPaid ? (
-                      <span className="text-success">Paid</span>
-                    ) : (
-                      <span className="text-danger">Not Paid</span>
-                    )}
-                  </p>
-                  <p>
-                    <strong>Total Amount:</strong>
-                    <br />${order.totalPrice.toFixed(2)}
-                  </p>
+
+                {/* Column for Total Price and Status */}
+                <Col
+                  md={4}
+                  className="d-flex flex-column align-items-center justify-content-center"
+                >
+                  <div className="text-center mb-3">
+                    <h4 className="font-weight-bold">
+                      Total Price: ${order.totalPrice.toFixed(2)}
+                    </h4>
+                  </div>
+                  <div className="text-center">
+                    <h6 className="font-weight-bold">
+                      Status:
+                      <span
+                        className={`badge ${
+                          order.status === "Pending"
+                            ? "bg-warning"
+                            : order.status === "Shipped"
+                            ? "bg-info"
+                            : order.status === "Delivered"
+                            ? "bg-success"
+                            : "bg-secondary"
+                        }`}
+                      >
+                        {order.status}
+                      </span>
+                    </h6>
+                  </div>
                 </Col>
               </Row>
-              <h6 className="text-muted mb-3">Order Items</h6>
-              <ListGroup variant="flush">
-                {order.orderItems.map((item) => (
-                  <ListGroup.Item key={item._id}>
-                    <Row className="align-items-center mb-2">
-                      <Col md={2} className="mb-2">
-                        <Image
-                          src={item.product.image}
-                          alt={item.product.name}
-                          fluid
-                          rounded
-                        />
-                      </Col>
-                      <Col md={5} className="mb-2">
-                        <h6 className="mb-0">{item.product.name}</h6>
-                      </Col>
-                      <Col md={1} className="mb-2">
-                        <strong>Qty:</strong> {item.qty}
-                      </Col>
-                      <Col md={2} className="mb-2">
-                        <strong>Price:</strong> $
-                        {(item.qty * item.product.price).toFixed(2)}
-                      </Col>
-                      <Col md={2} className="mb-2">
-                        <strong>Total:</strong> ${order.totalPrice.toFixed(2)}
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
             </Card.Body>
           </Card>
         ))

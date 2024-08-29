@@ -37,6 +37,10 @@ const ordersSchema = mongoose.Schema({
         update_time: { type: String },
         email_address: { type: String },
     },
+    status: {
+        type: String,
+        default: "Pending"
+    },
     itemsPrice: {
         type: Number,
         required: true,
