@@ -91,6 +91,7 @@ const orderSlice = createSlice({
             .addCase(getOrdersAsync.fulfilled, (state, action) => {
                 state.loading = false
                 state.orders = action.payload || []
+                state.error = null
                 // state.user = action.payload.user || {}
                 // state.shippingAddress = action.payload.shippingAddress || {}
                 // state.paymentMethod = action.payload.paymentMethod
@@ -118,6 +119,7 @@ const orderSlice = createSlice({
             .addCase(createOrdersAsync.fulfilled, (state, action) => {
                 state.loading = false
                 state.createdOrder = action.payload
+                state.error = null
             })
     }
 })
