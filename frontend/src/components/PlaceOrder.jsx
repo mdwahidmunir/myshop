@@ -11,11 +11,7 @@ import {
 import { useEffect } from "react";
 import { selectAuthToken } from "../redux/selectors/authSelector";
 import { SHIPPING_CHARGE } from "../utils/constants";
-import {
-  createOrdersAsync,
-  resetError,
-  setError,
-} from "../redux/slices/ordersSlice";
+import { createOrdersAsync, resetError } from "../redux/slices/ordersSlice";
 import { selectOrdersError } from "../redux/selectors/ordersSelector";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -64,9 +60,9 @@ function PlaceOrder() {
     if (authToken && !address) navigate("/shipping");
     if (error) toast.error(error.message, { autoClose: 3000 });
     return () => {
-      resetError();
+      dispatch(resetError());
     };
-  }, [navigate, authToken, address, error]);
+  }, [dispatch, navigate, authToken, address, error]);
 
   return (
     <div>
