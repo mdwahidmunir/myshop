@@ -46,7 +46,6 @@ const Orders = () => {
     <>
       <ToastContainer />
       <Container className="my-5">
-        {/* <h2 className="mb-4">Order List</h2> */}
         {loading ? (
           <OrdersPlaceholder />
         ) : error ? (
