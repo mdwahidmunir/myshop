@@ -46,6 +46,7 @@ const Orders = () => {
     <>
       <ToastContainer />
       <Container className="my-5">
+        {/* <h2 className="mb-4">Order List</h2> */}
         {loading ? (
           <OrdersPlaceholder />
         ) : error ? (
@@ -57,7 +58,6 @@ const Orders = () => {
           </Message>
         ) : (
           <div>
-            <h2 className="mb-4">Order List</h2>
             {orders.map((order) => (
               <Card key={order._id} className="mb-4 shadow-sm rounded">
                 <Card.Header className="bg-dark text-white py-3 rounded">
