@@ -11,6 +11,7 @@ const OrdersScreen = () => {
       <Header />
       <main className="py-3">
         <Container>
+          <h2 className="mb-4">Orders</h2>
           <React.Suspense fallback={<OrdersPlaceholder />}>
             <LazyOrders />
           </React.Suspense>

@@ -47,7 +47,7 @@ const cartSlice = createSlice({
                 .reduce((acc, item) => acc + item.qty * item.price, 0)
                 .toFixed(2))
             state.taxAmt = +(TAX * state.totalItemsPrice).toFixed(2)
-            state.totalPayableAmt = state.totalItemsPrice + state.taxAmt + SHIPPING_CHARGE
+            state.totalPayableAmt = (state.totalItemsPrice + state.taxAmt + SHIPPING_CHARGE).toFixed(2)
             localStorage.setItem('cart', JSON.stringify(state.cartItems))
         }
     },
@@ -78,7 +78,7 @@ const cartSlice = createSlice({
                     .reduce((acc, item) => acc + item.qty * item.price, 0)
                     .toFixed(2))
                 state.taxAmt = +(TAX * state.totalItemsPrice).toFixed(2)
-                state.totalPayableAmt = state.totalItemsPrice + state.taxAmt + SHIPPING_CHARGE
+                state.totalPayableAmt = (state.totalItemsPrice + state.taxAmt + SHIPPING_CHARGE).toFixed(2)
 
                 state.cartItems.length !== 0 && localStorage.setItem('cart', JSON.stringify(state.cartItems))
             })

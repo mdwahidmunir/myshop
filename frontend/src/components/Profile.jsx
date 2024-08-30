@@ -13,6 +13,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { updateUserAsync } from "../redux/slices/userSlice";
 import "react-toastify/dist/ReactToastify.css";
 import { isLoggedIn } from "../utils/cookieParser";
+import Orders from "./Orders";
 
 const Profile = () => {
   const [email, setEmail] = useState("");
@@ -175,7 +176,8 @@ const Profile = () => {
       </Col>
 
       <Col md={9}>
-        <h2>Orders</h2>
+        <h2 className="mb-4">Orders</h2>
+        <Orders />
       </Col>
     </Row>
   );

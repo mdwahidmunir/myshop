@@ -3,7 +3,6 @@ import { Row, Col, Card, Placeholder, ListGroup } from "react-bootstrap";
 const OrdersPlaceholder = () => {
   return (
     <>
-      <h2 className="mb-4">Order List</h2>
       {[...Array(2)].map((_, index) => (
         <Card key={index} className="mb-4 shadow-sm rounded">
           <Card.Header className="bg-dark text-white py-3 rounded">
