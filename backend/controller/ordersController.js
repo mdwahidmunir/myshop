@@ -50,7 +50,7 @@ const createOrder = async (req, res) => {
 
             return res.status(200).json({
                 status: "success",
-                response: order
+                response: order.orderId
             })
 
         }

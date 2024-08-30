@@ -23,7 +23,7 @@ const totalItemsPrice = initialCartItems ? +(initialCartItems
     .reduce((acc, item) => acc + item.qty * item.price, 0)
     .toFixed(2)) : 0
 const taxAmt = +(TAX * totalItemsPrice).toFixed(2)
-const totalPayableAmt = totalItemsPrice + taxAmt + SHIPPING_CHARGE
+const totalPayableAmt = (totalItemsPrice + taxAmt + SHIPPING_CHARGE).toFixed(2)
 
 
 const initialState = {

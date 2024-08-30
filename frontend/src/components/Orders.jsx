@@ -36,8 +36,8 @@ const Orders = () => {
         <div>
           <h2 className="mb-4">Order List</h2>
           {orders.map((order) => (
-            <Card key={order._id} className="mb-4 shadow-sm">
-              <Card.Header className="bg-dark text-white py-3">
+            <Card key={order._id} className="mb-4 shadow-sm rounded">
+              <Card.Header className="bg-dark text-white py-3 rounded">
                 <Row className="d-flex flex-column flex-md-row justify-content-between">
                   <Col xs={12} md={6} className="d-flex justify-content-start">
                     <h5 className="m-1">Order ID: {order.orderId}</h5>
@@ -66,10 +66,10 @@ const Orders = () => {
                                 rounded
                               />
                             </Col>
-                            <Col md={5} className="mb-2">
+                            <Col md={4} className="mb-2">
                               <h6 className="mb-0">{item.product.name}</h6>
                             </Col>
-                            <Col md={1} className="mb-2">
+                            <Col md={2} className="mb-2">
                               <strong>Qty:</strong> {item.qty}
                             </Col>
                             <Col md={2} className="mb-2">

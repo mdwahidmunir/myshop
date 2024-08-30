@@ -3,6 +3,28 @@ import _axios from "../../utils/axiosHelper";
 import { logout } from "./authSlice";
 
 
+export const createOrdersAsync = createAsyncThunk(
+    'orders/createOrders',
+    async (orderDetails, thunkAPI) => {
+        try {
+            const response = await _axios.post('/orders', orderDetails, { withCredentials: true })
+            return response.data.response
+        }
+        catch (err) {
+            console.log(err)
+            if (err.response.status === 401 || err.response.status === 403) {
+                thunkAPI.dispatch(logout());
+            }
+            else {
+                const responseFromBackEndServer = err.response.data.error || err.message
+                if (responseFromBackEndServer)
+                    err.message = responseFromBackEndServer
+            }
+            return thunkAPI.rejectWithValue(err)
+        }
+    }
+)
+
 export const getOrdersAsync = createAsyncThunk(
     'orders/getOrders',
     async (_, thunkAPI) => {
@@ -30,6 +52,8 @@ const initialState = {
     error: null,
     orders: [],
     currentOrder: null,
+    createdOrder: null,
+    infoMessage: null
     // user: {},
     // shippingAddress: {},
     // paymentMethod: null,
@@ -46,12 +70,14 @@ const orderSlice = createSlice({
     name: 'orders',
     initialState,
     reducers: {
+        setError: (state, action) => { state.error = action.payload },
         resetError: (state) => { state.error = null }
     },
     extraReducers: (builder) => {
         builder
             .addCase(getOrdersAsync.pending, (state) => {
                 state.loading = true
+                state.createdOrder = null
             })
             .addCase(getOrdersAsync.rejected, (state, action) => {
                 state.loading = false
@@ -77,8 +103,24 @@ const orderSlice = createSlice({
                 // state.createdAt = action.payload.createdAt
                 // state.updatedAt = action.payload.updatedAt
             })
+            .addCase(createOrdersAsync.pending, (state) => {
+                state.loading = true
+            })
+            .addCase(createOrdersAsync.rejected, (state, action) => {
+                state.loading = false
+                const errorStatusCode = action.payload.response.status
+
+                if (errorStatusCode === 401 || errorStatusCode === 403)
+                    state.error = null
+                else
+                    state.error = action.payload.message || action.payload
+            })
+            .addCase(createOrdersAsync.fulfilled, (state, action) => {
+                state.loading = false
+                state.createdOrder = action.payload
+            })
     }
 })
 
-export const { resetError } = orderSlice.actions
+export const { resetError, setError } = orderSlice.actions
 export default orderSlice.reducer
