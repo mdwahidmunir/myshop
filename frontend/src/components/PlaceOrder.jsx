@@ -1,6 +1,6 @@
 import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import { selectShippingInfo } from "../redux/selectors/shippingSelector";
 import { selectPaymentState } from "../redux/selectors/paymentSlice";
@@ -11,31 +11,66 @@ import {
 import { useEffect } from "react";
 import { selectAuthToken } from "../redux/selectors/authSelector";
 import { SHIPPING_CHARGE } from "../utils/constants";
+import {
+  createOrdersAsync,
+  resetError,
+  setError,
+} from "../redux/slices/ordersSlice";
+import { selectOrdersError } from "../redux/selectors/ordersSelector";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const filterCart = (cartItems) => {
+  return cartItems.map((item) => {
+    const newItem = {
+      product: item._id,
+      qty: item.qty,
+    };
+    return newItem;
+  });
+};
 
 function PlaceOrder() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const { address, city, postalCode, country } =
     useSelector(selectShippingInfo);
-  const navigate = useNavigate();
-
   const { paymentMethod } = useSelector(selectPaymentState);
-
   const cartItems = useSelector(selectCartItems);
   const { totalItemsPrice, taxAmt, totalPayableAmt } =
     useSelector(selectCartState);
-
   let authToken = useSelector(selectAuthToken);
+  const error = useSelector(selectOrdersError);
 
-  const placeOrder = () => {
-    // e.preventDefault();
-    navigate("/orders");
+  const placeOrder = async () => {
+    const orderDetail = {
+      orderItems: filterCart(cartItems),
+      shippingAddress: { address, city, postalCode, country },
+      paymentMethod,
+      itemsPrice: totalItemsPrice,
+      taxPrice: taxAmt,
+      shippingPrice: SHIPPING_CHARGE,
+      totalPrice: totalPayableAmt,
+    };
+
+    const response = await dispatch(createOrdersAsync(orderDetail));
+
+    if (response.type === createOrdersAsync.fulfilled.toString())
+      navigate("/orders");
   };
 
   useEffect(() => {
     if (authToken && !address) navigate("/shipping");
-  }, [navigate, authToken, address]);
+    if (error) toast.error(error.message, { autoClose: 3000 });
+    return () => {
+      resetError();
+    };
+  }, [navigate, authToken, address, error]);
 
   return (
     <div>
+      <ToastContainer />
       <Row>
         <Col md={8}>
           <ListGroup variant="flush">
