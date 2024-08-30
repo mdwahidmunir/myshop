@@ -12,7 +12,10 @@ import { useEffect } from "react";
 import { selectAuthToken } from "../redux/selectors/authSelector";
 import { SHIPPING_CHARGE } from "../utils/constants";
 import { createOrdersAsync, resetError } from "../redux/slices/ordersSlice";
-import { selectOrdersError } from "../redux/selectors/ordersSelector";
+import {
+  selectOrdersError,
+  selectOrdersLoading,
+} from "../redux/selectors/ordersSelector";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -38,6 +41,7 @@ function PlaceOrder() {
     useSelector(selectCartState);
   let authToken = useSelector(selectAuthToken);
   const error = useSelector(selectOrdersError);
+  const loading = useSelector(selectOrdersLoading);
 
   const placeOrder = async () => {
     const orderDetail = {
@@ -168,7 +172,7 @@ function PlaceOrder() {
                 <Button
                   type="button"
                   className="btn-block w-100"
-                  disabled={cartItems.length === 0}
+                  disabled={cartItems.length === 0 || loading}
                   onClick={placeOrder}
                 >
                   Place Order
