@@ -50,6 +50,10 @@ function Header() {
                     <NavDropdown.Item>Profile</NavDropdown.Item>
                   </LinkContainer>
 
+                  <LinkContainer to="/orders">
+                    <NavDropdown.Item>Orders</NavDropdown.Item>
+                  </LinkContainer>
+
                   <NavDropdown.Item onClick={(e) => handleLogout(e)}>
                     Logout
                   </NavDropdown.Item>

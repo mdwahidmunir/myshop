@@ -57,3 +57,8 @@ margin: 0 auto;
   cursor: pointer;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+  text-decoration: none;
+}
+

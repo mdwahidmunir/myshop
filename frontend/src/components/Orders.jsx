@@ -66,7 +66,14 @@ const Orders = () => {
                       md={6}
                       className="d-flex justify-content-start"
                     >
-                      <h5 className="m-1">Order ID: {order.orderId}</h5>
+                      <Link
+                        to={`/orders/${order.orderId.replace("#", "%23")}`}
+                        style={{ textDecoration: "none", color: "white" }}
+                      >
+                        <h5 className="m-1 cursor-pointer">
+                          Order ID: {order.orderId}
+                        </h5>
+                      </Link>
                     </Col>
                     <Col
                       xs={12}
@@ -97,12 +104,17 @@ const Orders = () => {
                                 />
                               </Col>
                               <Col md={4} className="mb-2">
-                                <h6 className="mb-0">{item.product.name}</h6>
+                                <Link
+                                  to={`/product/${item.product._id}`}
+                                  style={{ textDecoration: "none" }}
+                                >
+                                  <h6 className="mb-0">{item.product.name}</h6>
+                                </Link>
                               </Col>
                               <Col md={2} className="mb-2">
                                 <strong>Qty:</strong> {item.qty}
                               </Col>
-                              <Col md={2} className="mb-2">
+                              <Col md={3} className="mb-2">
                                 <strong>Price:</strong> $
                                 {(item.qty * item.product.price).toFixed(2)}
                               </Col>
