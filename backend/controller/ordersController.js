@@ -77,7 +77,7 @@ const getOrders = async (req, res) => {
 
         const orders = await Orders
             .find({ user: id })
-            .populate('orderItems.product', '-_id')
+            .populate('orderItems.product')
             .populate('user', 'name email -_id')
             .sort({ createdAt: -1 })
             .lean()
@@ -95,4 +95,32 @@ const getOrders = async (req, res) => {
     }
 }
 
-module.exports = { createOrder, getOrders }
+const getOrderById = async (req, res) => {
+    try {
+        const token = req.cookies.jwt
+        if (!token)
+            return res.status(403).json({
+                status: "failure",
+                error: "Authentication Failed"
+            })
+        const { id: userId } = jwt.verify(token, JWT_SECRET)
+        const { id } = req.params
+        const order = await Orders
+            .findOne({ orderId: id, user: userId })
+            .populate('orderItems.product')
+            .populate('user', 'name email -_id')
+            .lean()
+        return res.status(200).json({
+            status: "success",
+            response: order
+        })
+    }
+    catch (err) {
+        return res.status(500).json({
+            status: "failure",
+            error: err.message
+        })
+    }
+}
+
+module.exports = { createOrder, getOrders, getOrderById }

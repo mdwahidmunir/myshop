@@ -33,7 +33,27 @@ export const getOrdersAsync = createAsyncThunk(
             return response.data.response
         }
         catch (err) {
-            console.log(err)
+            if (err.response.status === 401 || err.response.status === 403) {
+                thunkAPI.dispatch(logout());
+            }
+            else {
+                const responseFromBackEndServer = err.response.data.error || err.message
+                if (responseFromBackEndServer)
+                    err.message = responseFromBackEndServer
+            }
+            return thunkAPI.rejectWithValue(err)
+        }
+    }
+)
+
+export const getOrderByIdAsync = createAsyncThunk(
+    'orders/getOrderById',
+    async (orderId, thunkAPI) => {
+        try {
+            const response = await _axios.get(`/orders/${orderId}`, { withCredentials: true })
+            return response.data.response
+        }
+        catch (err) {
             if (err.response.status === 401 || err.response.status === 403) {
                 thunkAPI.dispatch(logout());
             }
@@ -119,6 +139,24 @@ const orderSlice = createSlice({
             .addCase(createOrdersAsync.fulfilled, (state, action) => {
                 state.loading = false
                 state.createdOrder = action.payload
+                state.error = null
+            })
+            .addCase(getOrderByIdAsync.pending, (state) => {
+                state.loading = true
+                state.createdOrder = null
+            })
+            .addCase(getOrderByIdAsync.rejected, (state, action) => {
+                state.loading = false
+                const errorStatusCode = action.payload.response.status
+
+                if (errorStatusCode === 401 || errorStatusCode === 403)
+                    state.error = null
+                else
+                    state.error = action.payload.message || action.payload
+            })
+            .addCase(getOrderByIdAsync.fulfilled, (state, action) => {
+                state.loading = false
+                state.currentOrder = action.payload
                 state.error = null
             })
     }
