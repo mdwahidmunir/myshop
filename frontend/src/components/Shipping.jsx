@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Form } from "react-bootstrap";
-import { logout, setAuthError, setAuthToken } from "../redux/slices/authSlice";
 import { selectAuthToken } from "../redux/selectors/authSelector";
 import {
   resetError,
@@ -10,7 +9,6 @@ import {
 } from "../redux/slices/shippingSlice";
 import { selectShippingInfo } from "../redux/selectors/shippingSelector";
 import { getShippingInfo } from "../redux/slices/shippingSlice";
-import cookieParser, { isLoggedIn } from "../utils/cookieParser";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FormContainer from "./common/FormContainer";
