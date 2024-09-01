@@ -1,19 +1,15 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Form, Row, Col } from "react-bootstrap";
-import { selectAuthState } from "../redux/selectors/authSelector";
+import { Button, Form } from "react-bootstrap";
 import {
   selectUserInfo,
   selectUserState,
 } from "../redux/selectors/userSelector";
-import { logout, resetError, setAuthError } from "../redux/slices/authSlice";
-import Message from "./Message";
+import { setAuthError } from "../redux/slices/authSlice";
 import { ToastContainer, toast } from "react-toastify";
-import { IoCloseSharp } from "react-icons/io5";
 import { updateUserAsync } from "../redux/slices/userSlice";
 import "react-toastify/dist/ReactToastify.css";
-import { isLoggedIn } from "../utils/cookieParser";
-import Orders from "./Orders";
+import FormContainer from "./common/FormContainer";
 
 const Profile = () => {
   const [email, setEmail] = useState("");
@@ -23,7 +19,6 @@ const Profile = () => {
   const [disablePasswordSection, setDisablePasswordSection] = useState(true);
   const dispatch = useDispatch();
 
-  const { error } = useSelector(selectAuthState);
   const { loading } = useSelector(selectUserState);
 
   const areEmptyFieldsPresent = () => {
@@ -89,10 +84,6 @@ const Profile = () => {
     }
   };
 
-  const handleCloseClick = () => {
-    dispatch(resetError());
-  };
-
   const switchHandler = () => {
     setDisablePasswordSection((prevState) => !prevState);
   };
@@ -105,18 +96,10 @@ const Profile = () => {
   }, [userInfo]);
 
   return (
-    <Row>
+    <>
       <ToastContainer />
-      <Col md={3}>
+      <FormContainer>
         <h2>User Profile</h2>
-        {error && (
-          <Message variant="danger">
-            {error}{" "}
-            <span to="/login" onClick={handleCloseClick}>
-              <IoCloseSharp className="fas-danger-close" />
-            </span>
-          </Message>
-        )}
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="name" className="mb-3">
             <Form.Label>Name *</Form.Label>
@@ -173,13 +156,8 @@ const Profile = () => {
             Update
           </Button>
         </Form>
-      </Col>
-
-      <Col md={9}>
-        <h2 className="mb-4">Orders</h2>
-        <Orders />
-      </Col>
-    </Row>
+      </FormContainer>
+    </>
   );
 };
 

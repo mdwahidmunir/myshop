@@ -10,10 +10,14 @@ export const getUserAsync = createAsyncThunk(
             return response.data.response
         }
         catch (err) {
-            thunkAPI.dispatch(logout())
-            const responseFromBackEndServer = err.response.data?.error || err.message
-            if (responseFromBackEndServer)
-                err.message = responseFromBackEndServer
+            if (err.response.status === 401 || err.response.status === 403) {
+                thunkAPI.dispatch(logout());
+            }
+            else {
+                const responseFromBackEndServer = err.response.data.error || err.message
+                if (responseFromBackEndServer)
+                    err.message = responseFromBackEndServer
+            }
             return thunkAPI.rejectWithValue(err)
         }
     }
@@ -28,10 +32,14 @@ export const updateUserAsync = createAsyncThunk(
             return response.data.response
         }
         catch (err) {
-            thunkAPI.dispatch(logout());
-            const responseFromBackEndServer = err.response.data.error
-            if (responseFromBackEndServer)
-                err.message = responseFromBackEndServer
+            if (err.response.status === 401 || err.response.status === 403) {
+                thunkAPI.dispatch(logout());
+            }
+            else {
+                const responseFromBackEndServer = err.response.data.error || err.message
+                if (responseFromBackEndServer)
+                    err.message = responseFromBackEndServer
+            }
             return thunkAPI.rejectWithValue(err)
         }
     }
