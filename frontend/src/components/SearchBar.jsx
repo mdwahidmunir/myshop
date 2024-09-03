@@ -4,9 +4,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ITEMS_LIMIT } from "../utils/constants";
 
 const SearchBar = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+  const [searchTerm, setSearchTerm] = useState(
+    searchParams.get("search") || ""
+  );
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -15,16 +18,19 @@ const SearchBar = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const timeOutId = setTimeout(() => {
-      if (searchTerm.trim() === "") {
+      let keyword;
+      if (searchParams.get("search") && searchTerm.trim() === "") {
         searchParams.delete("search");
-      } else {
+        keyword = `/?${searchParams.toString()}`;
+        navigate(keyword);
+      } else if (searchTerm !== "") {
         searchParams.set("search", searchTerm);
 
         !searchParams.get("page") && searchParams.set("page", 1);
         !searchParams.get("limit") && searchParams.set("limit", ITEMS_LIMIT);
+        keyword = `/?${searchParams.toString()}`;
+        navigate(keyword);
       }
-      const keyword = `/?${searchParams.toString()}`;
-      navigate(keyword);
     }, 500);
 
     return () => {

@@ -63,6 +63,7 @@ function ProductList() {
       searchParams.set("limit", ITEMS_LIMIT);
       keyword = `/?${searchParams.toString()}`;
     }
+    console.log("navigating filter ...", keyword);
     navigate(keyword);
   };
 
