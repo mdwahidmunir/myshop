@@ -61,6 +61,7 @@ const getProducts = async (req, res) => {
         const sort = req.query.sort || null
         const brand = req.query.brand || null;
         const category = req.query.category || null;
+        const search = req.query.search || null;
 
         const skip = (page - 1) * limit
 
@@ -71,6 +72,14 @@ const getProducts = async (req, res) => {
 
         if (category) {
             query.category = category;
+        }
+
+        if (search) {
+            query.$or = [
+                { name: { $regex: search, $options: "i" } },
+                { brand: { $regex: search, $options: "i" } },
+                { category: { $regex: search, $options: "i" } }
+            ];
         }
 
         let products

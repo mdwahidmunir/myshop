@@ -9,6 +9,7 @@ import { selectIsLoggedIn } from "../redux/selectors/authSelector";
 import { useEffect } from "react";
 import { getUserAsync } from "../redux/slices/userSlice";
 import { logout } from "../redux/slices/authSlice";
+import SearchBar from "./SearchBar";
 
 function Header() {
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ function Header() {
           <LinkContainer to="/">
             <Navbar.Brand>MyShop</Navbar.Brand>
           </LinkContainer>
+          <SearchBar />
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">

@@ -18,10 +18,16 @@ const Paginate = ({ page, totalPages }) => {
   const sort = searchParams.get("sort");
 
   const handleClick = (page) => {
+    !searchParams.get("limit") && searchParams.set("limit", ITEMS_LIMIT);
     if (sort) {
-      navigate(`/?page=${page}&limit=${ITEMS_LIMIT}&sort=${sort}`);
+      searchParams.set("sort", sort);
+      searchParams.set("page", page);
+      const keyword = `/?${searchParams.toString()}`;
+      navigate(keyword);
     } else {
-      navigate(`/?page=${page}&limit=${ITEMS_LIMIT}`);
+      searchParams.set("page", page);
+      const keyword = `/?${searchParams.toString()}`;
+      navigate(keyword);
     }
   };
   return (
