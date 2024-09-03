@@ -6,20 +6,32 @@ import {
   selectUserState,
 } from "../redux/selectors/userSelector";
 import { selectIsLoggedIn } from "../redux/selectors/authSelector";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getUserAsync } from "../redux/slices/userSlice";
 import { logout } from "../redux/slices/authSlice";
 import SearchBar from "./SearchBar";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function Header() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userName = useSelector(selectUserName);
   const isAuthenticated = useSelector(selectIsLoggedIn);
   const { loading: userLoading } = useSelector(selectUserState);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const [searchTerm, setSearchTerm] = useState(
+    searchParams.get("search") || ""
+  );
 
   const handleLogout = async (e) => {
     e.preventDefault();
     dispatch(logout());
+  };
+
+  const handleLogoClick = () => {
+    setSearchTerm("");
+    navigate("/");
   };
 
   useEffect(() => {
@@ -32,11 +44,11 @@ function Header() {
     <header>
       <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
         <Container>
-          <LinkContainer to="/">
-            <Navbar.Brand>MyShop</Navbar.Brand>
-          </LinkContainer>
-          <SearchBar />
+          <Navbar.Brand className="cursor-pointer" onClick={handleLogoClick}>
+            MyShop
+          </Navbar.Brand>
 
+          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
