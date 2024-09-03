@@ -24,7 +24,6 @@ const SearchBar = () => {
         !searchParams.get("limit") && searchParams.set("limit", ITEMS_LIMIT);
       }
       const keyword = `/?${searchParams.toString()}`;
-      console.log("navigating....", keyword);
       navigate(keyword);
     }, 500);
 
