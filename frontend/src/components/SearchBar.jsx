@@ -22,7 +22,6 @@ const SearchBar = () => {
       if (searchParams.get("search") && searchTerm.trim() === "") {
         searchParams.delete("search");
         keyword = `/?${searchParams.toString()}`;
-        console.log("navigating with delete...", keyword);
         navigate(keyword);
       } else if (searchTerm !== "") {
         searchParams.set("search", searchTerm);
@@ -30,7 +29,6 @@ const SearchBar = () => {
         !searchParams.get("page") && searchParams.set("page", 1);
         !searchParams.get("limit") && searchParams.set("limit", ITEMS_LIMIT);
         keyword = `/?${searchParams.toString()}`;
-        console.log("navigating...", keyword);
         navigate(keyword);
       }
     }, 500);
