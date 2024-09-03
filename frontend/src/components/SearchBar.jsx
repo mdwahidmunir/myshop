@@ -3,13 +3,13 @@ import { Form, FormControl } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ITEMS_LIMIT } from "../utils/constants";
 
-const SearchBar = () => {
+const SearchBar = ({ searchTerm, setSearchTerm }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const searchParams = new URLSearchParams(location.search);
-  const [searchTerm, setSearchTerm] = useState(
-    searchParams.get("search") || ""
-  );
+  //   const searchParams = new URLSearchParams(location.search);
+  //   const [searchTerm, setSearchTerm] = useState(
+  //     searchParams.get("search") || ""
+  //   );
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -30,6 +30,8 @@ const SearchBar = () => {
         !searchParams.get("limit") && searchParams.set("limit", ITEMS_LIMIT);
         keyword = `/?${searchParams.toString()}`;
         navigate(keyword);
+      } else if (!searchParams.get("search")) {
+        setSearchTerm("");
       }
     }, 500);
 
