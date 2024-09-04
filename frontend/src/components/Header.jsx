@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { getUserAsync } from "../redux/slices/userSlice";
 import { logout } from "../redux/slices/authSlice";
 import SearchBar from "./SearchBar";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Header() {
   const dispatch = useDispatch();
