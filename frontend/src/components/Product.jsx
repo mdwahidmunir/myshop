@@ -1,4 +1,4 @@
-import { Card, Image } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import Rating from "./Rating";
 import { Link } from "react-router-dom";
 import LazyImage from "./common/LazyImage";
