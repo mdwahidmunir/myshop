@@ -2,22 +2,14 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Form, Row, Col } from "react-bootstrap";
-import {
-  logout,
-  setAuthError,
-  setAuthToken,
-  signup,
-} from "../redux/slices/authSlice";
+import { setAuthError, signup } from "../redux/slices/authSlice";
 import {
   selectAuthToken,
   selectAuthState,
 } from "../redux/selectors/authSelector";
 import { resetError } from "../redux/slices/authSlice";
 import FormContainer from "./common/FormContainer";
-import Message from "./Message";
 import { Link } from "react-router-dom";
-import cookieParser from "../utils/cookieParser";
-import { IoCloseSharp } from "react-icons/io5";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

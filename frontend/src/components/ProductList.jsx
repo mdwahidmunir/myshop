@@ -2,7 +2,6 @@ import { Row, Col, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../redux/slices/productSlice";
-import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Paginate from "./common/Paginate";
 import Product from "../components/Product";
@@ -14,7 +13,6 @@ import {
 } from "../redux/selectors/productSelector";
 import { ITEMS_LIMIT, SORT_DROPDOWN } from "../utils/constants";
 import { getFiltersAsync } from "../redux/slices/filterSlice";
-import ProductPlaceholder from "./ProductPlaceholder";
 import ProductListPLaceholder from "./ProductListPLaceholder";
 import {
   selectBrands,

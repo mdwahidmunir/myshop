@@ -1,9 +1,7 @@
-import React from "react";
 import Header from "../components/Header";
 import { Container } from "react-bootstrap";
 import Cart from "../components/Cart";
 import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
 import CheckoutSteps from "../components/common/CheckoutSteps";
 
 const CartScreen = () => {

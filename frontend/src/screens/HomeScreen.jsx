@@ -2,7 +2,6 @@ import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Container } from "react-bootstrap";
-import Loader from "../components/Loader";
 import ProductListPLaceholder from "../components/ProductListPLaceholder";
 const LazyProductList = React.lazy(() => import("../components/ProductList"));
 

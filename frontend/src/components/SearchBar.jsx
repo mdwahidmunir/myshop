@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Form, FormControl } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ITEMS_LIMIT } from "../utils/constants";
@@ -6,10 +6,6 @@ import { ITEMS_LIMIT } from "../utils/constants";
 const SearchBar = ({ searchTerm, setSearchTerm }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  //   const searchParams = new URLSearchParams(location.search);
-  //   const [searchTerm, setSearchTerm] = useState(
-  //     searchParams.get("search") || ""
-  //   );
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
